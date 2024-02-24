@@ -1,14 +1,14 @@
-course1A = {"A01": ["12:30 pm-01:20 pm", "MWF"]}
-course1B = {"B01": ["09:30 am-10:20 am", "W"], "B02": ["10:30 am-11:20 am", "W"], "B03": ["11:30 am-12:20 pm", "W"], 
-            "B04": ["01:30 pm-02:20 pm", "W"], "B05": ["02:30 pm-03:20 pm", "W"]}
-course2A = {"A01": ["02:30 pm-03:45 pm", "T"], "A02": ["02:30 pm-03:45 pm", "R"]}
-course3A = {"A01": ["10:00 am-11:15 am", "TR"]}
-course3B = {"B01": ["08:30 am-09:20 am", "T"], "B02": ["02:30 pm-03:20 pm", "W"], "B03": ["03:30 pm-04:20 pm", "W"], 
-            "B04": ["02:30 pm-03:20 pm", "R"]}
-course4A = {"A01": ["09:30 am-10:20 am", "MWF"]}
-course4B = {"B001": ["02:30 pm-03:45 pm", "W"]} #, "B02": ["05:30 pm-06:45 pm", "F"]}   ###
-course5A = {"A01": ["10:30 am-11:20 am", "MWF"]}
-course5B = {"B01": ["08:30 am-09:20 am", "F"], "B02": ["12:30 pm-01:20 pm", "F"], "B03": ["02:30 pm-03:20 pm", "F"]}
+# course1A = {"A01": ["12:30 pm-01:20 pm", "MWF"]}
+# course1B = {"B01": ["09:30 am-10:20 am", "W"], "B02": ["10:30 am-11:20 am", "W"], "B03": ["11:30 am-12:20 pm", "W"], 
+#             "B04": ["01:30 pm-02:20 pm", "W"], "B05": ["02:30 pm-03:20 pm", "W"]}
+# course2A = {"A01": ["02:30 pm-03:45 pm", "T"], "A02": ["02:30 pm-03:45 pm", "R"]}
+# course3A = {"A01": ["10:00 am-11:15 am", "TR"]}
+# course3B = {"B01": ["08:30 am-09:20 am", "T"], "B02": ["02:30 pm-03:20 pm", "W"], "B03": ["03:30 pm-04:20 pm", "W"], 
+#             "B04": ["02:30 pm-03:20 pm", "R"]}
+# course4A = {"A01": ["09:30 am-10:20 am", "MWF"]}
+# course4B = {"B001": ["02:30 pm-03:45 pm", "W"]} #, "B02": ["05:30 pm-06:45 pm", "F"]}   ###
+# course5A = {"A01": ["10:30 am-11:20 am", "MWF"]}
+# course5B = {"B01": ["08:30 am-09:20 am", "F"], "B02": ["12:30 pm-01:20 pm", "F"], "B03": ["02:30 pm-03:20 pm", "F"]}
 
 
 def courseArangement(course):
@@ -92,9 +92,10 @@ def timeGapCalculation(class_list):
 # class_list = [0]*n
 # class_list_ways  = []
 
-def main():
+def main(classes_list):
     global courses, n, class_list, class_list_ways
-    courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
+    # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
+    courses = classes_list
     n = len(courses)
     class_list = [0]*n
     class_list_ways  = []
@@ -109,9 +110,9 @@ def main():
         if timeGap < smallestTimeGap:
             smallestTimeGap = timeGap
             best_class_list = _class_list
-        print(timeGap)
+        # print(timeGap)
     
     return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list)
 
-main()
+# main()
 

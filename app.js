@@ -9,8 +9,9 @@ $(document).ready(function() {
         $.ajax({
             url: 'http://127.0.0.1:5000/schedule',
             type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ courses }),      // key is courses
+            // contentType: 'application/json',
+            // data: JSON.stringify({ courses }),      // key is courses
+            data: { courses: courses },
             success: function(response) {
                 console.log('Backend response:', response.result);
                 $("#result").html("Result: " + response.result);

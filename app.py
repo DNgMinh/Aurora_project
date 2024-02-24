@@ -10,13 +10,22 @@ CORS(app)
 def schedule():
     try:
         entered_courses = str(request.form.get('courses'))   # number is key, we are getting its value
+        print(entered_courses)
+        term = "202410"
+        courses = entered_courses.split()
+        courses_list = []
+        for course in courses:
+            key = course[0:4]
+            value = course[4:8]
+            courses_list.append({key : value})
 
-
-        myResult = result.calculate_result(entered_courses)
+        print(courses_list)
+        myResult = result.calculate_result(term, courses_list)
 
         return jsonify({'result': myResult})
 
     except Exception as e:
+        print(str(e))
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':

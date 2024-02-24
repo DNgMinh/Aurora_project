@@ -83,8 +83,8 @@ def schedule_retrieve(term, course_list):
         response6 = s6.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
         #print(response6.text)
         sessid = response6.cookies.get('SESSID')
-        scheduleA = [] 
-        scheduleB = []
+        scheduleA = {} 
+        scheduleB = {}
         soup = BeautifulSoup(response6.text, 'html.parser')
         table = soup.find(class_='datadisplaytable', recursive=True)
         rows = table.find_all('tr')
@@ -94,13 +94,15 @@ def schedule_retrieve(term, course_list):
                 course = columns[2].text + columns[3].text + columns[4].text
                 day = columns[8].text
                 time = columns[9].text
-                course_dict = {course : [time, day]}
                 if columns[4].text[0] == 'A':
-                    scheduleA.append(course_dict)
+                    scheduleA[course] = [time, day]
                 elif columns[4].text[0] == 'B':
-                    scheduleB.append(course_dict)
-        schedule_list.append(scheduleA)
-        schedule_list.append(scheduleB)
+                    scheduleB[course] = [time, day]
+
+        if len(scheduleA) != 0:
+            schedule_list.append(scheduleA)
+        if len(scheduleB) != 0:
+            schedule_list.append(scheduleB)
     return schedule_list
 
 def login():
@@ -145,5 +147,5 @@ def login():
     sessid = response.cookies.get('SESSID') 
     return sessid
     
-list = schedule_retrieve('202410', [{'COMP' : '1020'}] )
-print(list)
+# list = schedule_retrieve('202410', [{'COMP' : '1020'}, {'MATH' : '1240'}])
+# print(list)
