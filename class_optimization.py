@@ -111,7 +111,7 @@ def main():
             best_class_list = _class_list
         print(timeGap)
     
-    return (len(class_list_ways), smallestTimeGap, best_class_list)
+    return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list)
 
 main()
 
