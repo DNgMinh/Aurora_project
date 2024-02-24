@@ -15,3 +15,9 @@ Include `index.html` and `app.js`
 3. `result.py`: return result to send to frontend.
 4. `app.py`: server.
 5. `test.py`: ignore. Just a test file.
+
+### Usage
+
+* Run `app.py` to create a local server.
+* Open live server of `index.html`.
+* Unfortunately, we don't have enough time for some other features as well as a better UI. Enjoy!
