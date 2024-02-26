@@ -11,7 +11,7 @@ Include `index.html` and `app.js`
 ### Backend
 
 1. `class_optimization.py`: options including the best option for class scheduling. The backtracking algorithm is `backtracking` method.
-2. `schedule_retrieve.py`: scrapping Aurora webpage.
+2. `schedule_retrieve.py`: scrapping Aurora webpage, retrieving courses' schedules. 
 3. `result.py`: return result to send to frontend.
 4. `app.py`: server.
 5. `test.py`: ignore. Just a test file.
