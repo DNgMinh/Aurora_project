@@ -3,7 +3,9 @@ from bs4 import BeautifulSoup
 
 def schedule_retrieve(term, course_list):
     schedule_list = []
-    sessid = login()
+    id = input("Enter id:")
+    pin = input("Enter pin:")
+    sessid = login(id, pin)
     for course in course_list:
         subj, crse = list(course.items())[0]
         cookies = {
@@ -105,7 +107,7 @@ def schedule_retrieve(term, course_list):
             schedule_list.append(scheduleB)
     return schedule_list
 
-def login():
+def login(id, pin):
     cookies = {
         'TESTID': 'set',
         'BIGipServer~INB_SSB_Flex~Banner_Self_Service_BANPROD_pool': '336723978.64288.0000',
@@ -139,8 +141,8 @@ def login():
         'sec-ch-ua-platform': '"Windows"',
     }
     data = {
-        'sid': '008005342',
-        'PIN': 'Cei@072023',
+        'sid': id,
+        'PIN': pin,
     }
     s = requests.Session() 
     response = s.post('https://aurora.umanitoba.ca/ssb/twbkwbis.P_ValLogin', cookies=cookies, headers=headers, data=data)
