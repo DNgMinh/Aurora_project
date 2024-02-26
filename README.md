@@ -1,48 +1,23 @@
-# Welcome to .devHacks 2024!
+# Aurora scheduler
 
-Welcome to .devHacks 2024, an exciting hackathon event where creativity and innovation collide! We're thrilled to have you join us for this incredible journey of hacking, learning, and collaboration.
+This application will take in user input which are courses that they want to take in a semester. Then, by using data of course schedules scrapped from Aurora, it will recommend options for your registration (no overlapping class). It will also show the best option which has the smallest time gap between classes in a week. 
 
-## Event Details
+The algorithm used for solving overlapping is backtracking.
 
-- **Date & Time:** February 23-24 (5:00 PM - 5:00 PM)
-- **Location:** EITC Atrium
+### Fronend
 
-## Theme or Focus
+Include `index.html` and `app.js`
 
-.devHacks 2024 does not have a theme this year! However, we do have prize categories. 5 of them will be announced at the day of the event. Participants are encouraged to explore innovative solutions and tackle challenges of their free reign!
+### Backend
 
-## Resources
+1. `class_optimization.py`: options including the best option for class scheduling. The backtracking algorithm is `backtracking` method.
+2. `schedule_retrieve.py`: scrapping Aurora webpage, retrieving courses' schedules. 
+3. `result.py`: return result to send to frontend.
+4. `app.py`: server.
+5. `test.py`: ignore. Just a test file.
 
-- Please head over to [devclub.ca/devhacks](https://devclub.ca/devhacks) to address any confusion that you have.
-- This git cheatsheet might be of use to you [cheatsheet](https://education.github.com/git-cheat-sheet-education.pdf).
+### Usage
 
-## Code of Conduct
-
-Please review and adhere to our [Code of Conduct](https://devclub.ca/devhacks-code-of-conduct) throughout the event. We're committed to creating a safe, inclusive, and welcoming environment for all participants.
-
-## Submission Guidelines
-
-- Please add a branch called `ready-for-submission` in order to signify that you want to put your project for judging.
-- We will only accept commits on the 24 hour period of 5:00 PM - 5:00 PM from February 23 - 24.
-
-## Support and Assistance
-
-If you need assistance or have any questions during the hackathon, don't hesitate to reach out to our team at the event. We will be normally at the atrium.
-
-## Acknowledgments
-
-We'd like to express our gratitude to our sponsors:
-
-- [Pollard Banknote](https://www.pollardbanknote.com/)
-- [Johnston Group](https://johnstongroup.ca/)
-- [Lotlinx](https://www.lotlinx.ca/)
-- [Niche Technology](https://nicherms.com/)
-- [G3 Canada](https://www.g3.ca/)
-- [Priceline Partner Solutions](https://pricelinepartnersolutions.com/)
-- [Karve IT](https://karve.it/)
-
-Our volunteers who have made .devHacks 2024 possible.
-
-Thank you for your support!
-
-Happy hacking, and best of luck to all participants! Let's make .devHacks 2024 an unforgettable experience!
+* Run `app.py` to create a local server.
+* Open live server of `index.html`.
+* Unfortunately, we don't have enough time for some other features as well as a better UI. Enjoy!
