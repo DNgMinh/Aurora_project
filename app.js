@@ -4,6 +4,8 @@ $(document).ready(function() {
         // Get the input value
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
+        const termInput = $('#term');
+        const term = termInput.val();
 
         // Make an AJAX request to the backend
         $.ajax({
@@ -11,7 +13,7 @@ $(document).ready(function() {
             type: 'POST',
             // contentType: 'application/json',
             // data: JSON.stringify({ courses }),      // key is courses
-            data: { courses: courses },
+            data: { courses: courses, term : term },
             success: function(response) {
                 console.log('Backend response:', response.result);
                 $("#result").html("Result: " + response.result);
