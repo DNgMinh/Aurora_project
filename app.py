@@ -11,6 +11,7 @@ def schedule():
     try:
         entered_courses = str(request.form.get('courses'))   # number is key, we are getting its value
         print(entered_courses)
+        # get term
         term = str(request.form.get('term'))
         courses = entered_courses.split()
         courses_list = []
