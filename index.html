@@ -6,37 +6,33 @@
     <title>Aurora Scheduler</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script type="text/javascript" src="app.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
     </style>
 </head>
 <body>
 
     <h1>Aurora Scheduler</h1>
+    <div class="form">
+        <form id="courseForm">
+            <div>
+                <label for="term">Enter term:</label>
+                <input type="text" id="term" name="term" required>
+            </div>
+            <div>
+                <label for="courses">Enter courses (space-separated):</label>
+                <input type="text" id="courses" name="courses" required>
+            </div>
+            <div>
+                <button type="button", id ="submit">Submit</button>
+            </div>
+        </form>
+    </div>
     
-    <form id="courseForm">
-        <label for="term">Enter term:</label>
-        <input type="text" id="term" name="term" required>
-        <label for="courses">Enter courses (space-separated):</label>
-        <input type="text" id="courses" name="courses" required>
-        <button type="button", id ="submit">Submit</button>
-    </form>
 
-    <div id="result"></div>
-    
+    <div id="ways"></div>
+    <div id="smallestTimeGap"></div>
+    <div id="best_class_list"></div>
 
     <h2>Schedule Table</h2>
 
@@ -51,10 +47,34 @@
                 <th>Friday</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class = "myTable">
+            <!-- <tr>
+                <td>8:00 AM</td>
+                <td rowspan="2">Class A</td>
+                <td>Class B</td>
+                <td>Class C</td>
+                <td>Class D</td>
+                <td>Class E</td>
+            </tr>
             <tr>
-                <td>8:30 AM</td>
-                <td>Class A</td>
+                <td></td>
+                <td>Class B</td>
+                <td>Class B</td>
+                <td>Class C</td>
+                <td>Class D</td>
+                <td>Class E</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class B</td>
+                <td>Class B</td>
+                <td>Class C</td>
+                <td>Class D</td>
+                <td>Class E</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class B</td>
                 <td>Class B</td>
                 <td>Class C</td>
                 <td>Class D</td>
@@ -69,7 +89,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>9:30 AM</td>
+                <td></td>
+                <td>Class K</td>
+                <td>Class L</td>
+                <td>Class M</td>
+                <td>Class N</td>
+                <td>Class O</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class K</td>
+                <td>Class L</td>
+                <td>Class M</td>
+                <td>Class N</td>
+                <td>Class O</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class K</td>
                 <td>Class L</td>
                 <td>Class M</td>
@@ -79,13 +115,29 @@
             <tr>
                 <td>10 AM</td>
                 <td>Class F</td>
-                <td></td>
+                <td>Class F</td>
                 <td>Class H</td>
                 <td>Class I</td>
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>10:30 AM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -101,7 +153,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>11:30 AM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -117,7 +185,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>12:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -133,7 +217,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>1:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -149,7 +249,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>2:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -165,7 +281,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>3:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -181,7 +313,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>4:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -197,7 +345,23 @@
                 <td>Class J</td>
             </tr>
             <tr>
-                <td>5:30 PM</td>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
                 <td>Class F</td>
                 <td>Class G</td>
                 <td>Class H</td>
@@ -212,7 +376,30 @@
                 <td>Class I</td>
                 <td>Class J</td>
             </tr>
-           
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>Class F</td>
+                <td>Class G</td>
+                <td>Class H</td>
+                <td>Class I</td>
+                <td>Class J</td>
+            </tr> -->
         </tbody>
     </table>
 

@@ -1,0 +1,31 @@
+body {
+
+}
+
+#courses {
+    padding-left: 16px;
+    width: 500px;
+}
+
+input {
+    padding-left: 16px;
+    height: 40px;
+    border-radius: 4px;
+    border-style: solid;
+    border-color: #ddd;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}

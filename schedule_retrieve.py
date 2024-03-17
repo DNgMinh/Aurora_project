@@ -5,6 +5,7 @@ def schedule_retrieve(term, course_list):
     schedule_list = []
     id = input("Enter id:")
     pin = input("Enter pin:")
+    
     sessid = login(id, pin)
     for course in course_list:
         subj, crse = list(course.items())[0]

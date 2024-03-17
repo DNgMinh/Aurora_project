@@ -34,6 +34,16 @@ def timeEncoder(time):
 
     return (startTime, endTime)
 
+# backtracking algorithm
+# def backtracking(k):                                          # k is current level (current depth of the journey)
+#     for option in level(k):
+#         if isValid(option, k):
+#             solution[k] = option
+#             if k == n - 1:                                    # n-1 is the max level starting from level 0 (depth of the tree)                                  
+#                 solution_list.append(solution.copy())         # a solution if reach the end of the tree (n-1)
+#             else:
+#                 backtracking(k+1)                             # if not, moving to the next level
+# backtracking(0)
 
 def backtracking(k):
     for key, value in courses[k].items():
@@ -83,7 +93,7 @@ def timeGapCalculation(class_list):
         for j in range(1,len(startTime_list)):
             timeGap += startTime_list[j] - endTime_list[j-1]
                     
-    return timeGap
+    return timeGap            
 
 
 
@@ -101,7 +111,7 @@ def main(classes_list):
     class_list_ways  = []
     
     backtracking(0)
-    print(len(class_list_ways))
+    # print(len(class_list_ways))
     # print(class_list_ways[2])
     smallestTimeGap = 1000
     best_class_list = []
@@ -112,7 +122,15 @@ def main(classes_list):
             best_class_list = _class_list
         # print(timeGap)
     
-    return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list)
+    startTime_list = []                     # will be used in frontend
+    endTime_list = []
+    for i in range(len(best_class_list)):
+        for key, value in best_class_list[i].items():
+            startTime, endTime = timeEncoder(value[0])
+            startTime_list.append(startTime)
+            endTime_list.append(endTime)
+    
+    return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
 # main()
 
