@@ -4,7 +4,7 @@ This application will take in user input which are courses that they want to tak
 
 The algorithm used for solving overlapping is backtracking.
 
-### Fronend
+### Frontend
 
 Include `index.html` and `app.js`
 
