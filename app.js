@@ -30,7 +30,7 @@ $(document).ready(function() {
 
                 // return indexes of values of an array by ascending order
                 function sortedIndexes(array) {
-                    const indexedArray = array.map((value, index) => ({ value, index }));
+                    const indexedArray = array.map((value, index) => ({ value:value, index:index }));
                     indexedArray.sort((a, b) => a.value - b.value);
                     const sortedIndexes = indexedArray.map(item => item.index);
                     return sortedIndexes;
@@ -45,6 +45,7 @@ $(document).ready(function() {
                 // const key2 = Object.keys(secondClass)[0];
                 // const time2 = secondClass[key2][0];
                 const weekDays = ["M", "T", "W", "R", "F"];
+                $('.myTable').empty();                                                 // empty table first
 
                 for (let i = 0; i < startTime_sorted_indexes.length; i++) {
                     const _class = best_class_list[startTime_sorted_indexes[i]];
@@ -82,7 +83,7 @@ $(document).ready(function() {
                         <td>${fillRow[4]}</td>
                     </tr>`;
 
-                    $('tbody').append(rowContent);          // .html if want to replace existing html
+                    $('.myTable').append(rowContent);          // .html if want to replace existing html
                 }
                     
 
@@ -99,6 +100,104 @@ $(document).ready(function() {
             error: function(error) {
                 console.error('Error:', error);
             }
-        });
+        })
+    })
+
+
+    $('#done').click(function() {
+        // Get the input value
+        const weekDaySelect = $('#weekDay');
+        const weekDay = weekDaySelect.val();
+        const dayTimeSelect = $('#dayTime');
+        const dayTime = dayTimeSelect.val();
+        const customTimeInput = $('#customTime');
+        const customTime = customTimeInput.val();
+
+        // Make an AJAX request to the backend
+        $.ajax({
+            url: 'http://127.0.0.1:5000/customization',
+            type: 'POST',
+            data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
+
+            success: function(response) {
+                // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
+                console.log("There are ", response.customizedWays)
+                const best_customized_class_list = response.best_customized_class_list;
+                console.log('Backend customized response:', best_customized_class_list);
+                const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
+
+                $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
+                $("#smallestCustomizedTimeGap").html("The smallest time gap is: " + response.smallestCustomizedTimeGap + " hour per week.");
+                $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
+
+                // return indexes of values of an array by ascending order
+                function sortedIndexes(array) {
+                    const indexedArray = array.map((value, index) => ({ value:value, index:index }));
+                    indexedArray.sort((a, b) => a.value - b.value);
+                    const sortedIndexes = indexedArray.map(item => item.index);
+                    return sortedIndexes;
+                }
+                
+                const startTime_sorted_indexes = sortedIndexes(response.startTime_list);
+                const endTime_sorted_indexes = sortedIndexes(response.endTime_list);
+
+                // const secondClass = best_class_list[startTime_sorted_indexes[1]];
+                // const key2 = Object.keys(secondClass)[0];
+                // const time2 = secondClass[key2][0];
+                const weekDays = ["M", "T", "W", "R", "F"];
+                $('.myCustomizedTable').empty();                                                 // empty table first
+
+                for (let i = 0; i < startTime_sorted_indexes.length; i++) {
+                    const _class = best_customized_class_list[startTime_sorted_indexes[i]];
+                    const className = Object.keys(_class)[0];                       // this object only has one key
+                    const time = _class[className][0];
+                    const days = _class[className][1];
+                    const day_list = [];
+
+                    console.log("days" + days);
+
+                    for (let j = 0; j < days.length; j++) {
+                        for (let k = 0; k < weekDays.length; k++) {
+                            if (days[j] == weekDays[k]) {
+                                day_list.push(k);
+                                break;
+                            }
+                        }
+                    }
+                    console.log("day_list" + day_list);
+
+                    const fillRow = new Array(5).fill("");
+                    for (let j = 0; j < day_list.length; j++) {
+                        fillRow[day_list[j]] = className;
+                    }
+
+                    console.log("fillRow" + fillRow);
+
+                    const rowContent = `
+                    <tr>
+                        <td>${time}</td>
+                        <td>${fillRow[0]}</td>
+                        <td>${fillRow[1]}</td>
+                        <td>${fillRow[2]}</td>
+                        <td>${fillRow[3]}</td>
+                        <td>${fillRow[4]}</td>
+                    </tr>`;
+
+                    $('.myCustomizedTable').append(rowContent);          // .html if want to replace existing html
+                }
+            },
+
+            error: function(error) {
+                console.error('Error:', error);   
+            }
+        })
+    })
+
+    $('#dayTime').change(function() {
+        if ($(this).val() === 'customize') {
+            $('.customTime').show();
+        } else {
+            $('.customTime').hide();
+        }
     });
-});
+})

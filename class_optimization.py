@@ -24,7 +24,7 @@ def timeEncoder(time):
     endTime = time[9:14]
     endPeriod = time[15:17]
     if startPeriod == "am":
-        startTime = int(startTime[0:2]) + int(startTime[3:5])/60        # convert to number
+        startTime = int(startTime[0:2]) + int(startTime[3:5])/60        # convert to real number
     if startPeriod == "pm":
         startTime = 12 + int(startTime[0:2])%12 + int(startTime[3:5])/60
     if endPeriod == "am":
@@ -61,10 +61,10 @@ def checkEligibility(value, k):
         return 1
     else:
         for i in range(k):
-            temp_value = list(class_list[i].values())
-            for day in value[1]:             
+            temp_value = list(class_list[i].values())               # class_list is a list of dictonaries of current classes
+            for day in value[1]:                                    # value[1] is days of current execution ("MWF")
                 if day in temp_value[0][1]:                         # python is just dumb to make dict.values() an object
-                    if checkOverlap(value[0], temp_value[0][0]):
+                    if checkOverlap(value[0], temp_value[0][0]):    # so temp_value[0] is like ['11:30 am-12:20 pm', 'MWF']
                         return 0             
     return 1
 
@@ -102,20 +102,11 @@ def timeGapCalculation(class_list):
 # class_list = [0]*n
 # class_list_ways  = []
 
-def main(classes_list):
-    global courses, n, class_list, class_list_ways
-    # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
-    courses = classes_list
-    n = len(courses)
-    class_list = [0]*n
-    class_list_ways  = []
-    
-    backtracking(0)
-    # print(len(class_list_ways))
-    # print(class_list_ways[2])
+# find best option with the smallest time gap of a classes list
+def bestClassList(ways):
     smallestTimeGap = 1000
     best_class_list = []
-    for _class_list in class_list_ways:
+    for _class_list in ways:
         timeGap = timeGapCalculation(_class_list)
         if timeGap < smallestTimeGap:
             smallestTimeGap = timeGap
@@ -129,8 +120,68 @@ def main(classes_list):
             startTime, endTime = timeEncoder(value[0])
             startTime_list.append(startTime)
             endTime_list.append(endTime)
+    return smallestTimeGap, best_class_list, startTime_list, endTime_list
+
+# return the smallest time gap as the best option
+def main(classes_list):
+    global courses, n, class_list, class_list_ways
+    # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
+    courses = classes_list          # is a list of dictionaries of courses, each course contain some classes
+    n = len(courses)
+    class_list = [0]*n
+    class_list_ways  = []
+    
+    backtracking(0)
+    # print(len(class_list_ways))
+    # print(class_list_ways[2])
+    smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(class_list_ways)
     
     return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
 # main()
 
+# customizedDay = "M" || "T" || "W" || "R" || "F"
+# validIndexes contain indexes of valid options
+# freeTime = "allday" || "morning" || "midday" || ""afternoon" || "evening"
+def customization(customizedDay, noclassTime, customTime):
+    # print(customizedDay)
+    # print(noclassTime)
+    validIndexes = []
+    timePeriod_dict = {"morning": "08:00 am-11:00 am", "midday": "11:00 am-01:00 pm", "afternoon": "01:00 pm-17:00 pm", "evening": "17:00 pm-22:00 pm"}
+
+    if noclassTime == "customize":
+        finalNoClassTime = customTime
+    elif noclassTime != "allday":
+        finalNoClassTime = timePeriod_dict[noclassTime]
+
+    # print(timePeriod_dict[noclassTime])
+    # print(len(class_list_ways))
+    for i in range(len(class_list_ways)):
+        valid = 1
+        for _class in class_list_ways[i]:
+            # print(list(_class.values())[0][0])
+            days = list(_class.values())[0][1]              # days is like "MWF"
+            # print(days)
+            if customizedDay in days:
+                if noclassTime == "allday":
+                    valid = 0
+                    break
+                else:
+                    # startTime, endTime = timeEncoder(_class.values()[0][0])
+                    if checkOverlap(finalNoClassTime, list(_class.values())[0][0]):
+                        valid = 0
+                        break
+        if valid == 1:
+            validIndexes.append(i)
+        # break
+
+    customized_class_list_ways = []
+    for i in validIndexes:
+        customized_class_list_ways.append(class_list_ways[i].copy())
+
+    smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(customized_class_list_ways)
+
+    return (len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
+
+# class_list_ways is a list of below similar lists
+# [{'MATH1240A06': ['11:30 am-12:20 pm', 'MWF']}, {'MATH1240B12': ['04:00 pm-04:50 pm', 'T']}, {'COMP1010A01': ['12:30 pm-01:20 pm', 'MWF']}]

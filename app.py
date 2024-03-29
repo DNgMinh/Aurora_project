@@ -31,6 +31,30 @@ def schedule():
         print(str(e))
         return jsonify({'error': str(e)}), 500
 
+@app.route('/customization', methods=['POST'])
+def customization():
+    try:
+        weekDay = str(request.form.get("weekDay"))              # "M" 
+        dayTime = str(request.form.get("dayTime"))              # "morning"
+        customTime = str(request.form.get("customTime"))        # '12:30 pm-01:20 pm'
+        # print(weekDay)
+        # print(dayTime)
+        # print(customTime)
+        ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(weekDay, dayTime, customTime)
+        print(ways)
+        print(best_class_list)
+        # print("There are " + customizedWays + " customized ways.")
+        myCustomizationResult = {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+    
+        return jsonify(myCustomizationResult)
+    
+    except Exception as e:
+        print(str(e))
+        return jsonify({'error': str(e)}), 500
+
+
+
+
 if __name__ == '__main__':
     app.run()
 

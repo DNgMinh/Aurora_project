@@ -36,6 +36,25 @@ class_list = [{'A01': ['12:30 pm-01:20 pm', 'MWF']}, {'B03': ['11:30 am-12:20 pm
               {'A01': ['10:00 am-11:15 am', 'TR']}, {'B04': ['02:30 pm-03:20 pm', 'R']}, {'A01': ['09:30 am-10:20 am', 'MWF']}, 
               {'B001': ['02:30 pm-03:45 pm', 'W']}, {'A01': ['10:30 am-11:20 am', 'MWF']}, {'B01': ['08:30 am-09:20 am', 'F']}]
 
-for i in range(len(class_list)):
-    for key, value in class_list[i].items():
-        print(key)
+# for i in range(len(class_list)):
+#     for key, value in class_list[i].items():
+#         print(key)
+
+# numbers = [1, 2, 3, 4, 5]
+# doubled_numbers = map(lambda x: x * 2, numbers)
+# print(doubled_numbers)
+# print(list(doubled_numbers))
+
+# def incrementor(x):
+#         return x + 5
+# a = incrementor
+# print(a(5))
+
+# test_lst = []
+# test_lst.append(None)
+# print(test_lst)
+
+import class_optimization
+
+print("T" in "MWF")
+print(class_optimization.checkOverlap("01:00 pm-17:00 pm", '01:30 pm-02:20 pm'))
