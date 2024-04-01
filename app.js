@@ -80,7 +80,7 @@ $(document).ready(function() {
                     $('.newTable').append(first_column);
                 }
                 for (let j = 0; j < response.startTime_list.length; j++) {
-                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darkgoldenrod"];
+                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
                     let round_start_time = response.startTime_list[j] % 0.25 !== 0 ? response.startTime_list[j] - (response.startTime_list[j] % 0.25) : response.startTime_list[j];
                     let round_end_time = response.endTime_list[j] % 0.25 !==0 ? response.endTime_list[j] - (response.endTime_list[j] % 0.25) + 0.25 : response.endTime_list[j];
                     const _class = best_class_list[j];    
@@ -204,7 +204,7 @@ $(document).ready(function() {
                     $('.myCustomizedTable').append(first_column);
                 }
                 for (let j = 0; j < response.startTime_list.length; j++) {
-                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darkgoldenrod"];
+                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
                     let round_start_time = response.startTime_list[j] % 0.25 !== 0 ? response.startTime_list[j] - (response.startTime_list[j] % 0.25) : response.startTime_list[j];
                     let round_end_time = response.endTime_list[j] % 0.25 !==0 ? response.endTime_list[j] - (response.endTime_list[j] % 0.25) + 0.25 : response.endTime_list[j];
                     const _class = best_customized_class_list[j];

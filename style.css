@@ -89,6 +89,23 @@ select {
     color: #FFFFFF;
 }
 
-.gray {
-    background-color: gray;
+.darkkhaki {
+    background-color: #BDB76B; 
+    color: #FFFFFF;
 }
+
+.cornflowerblue {
+    background-color: #6495ED;
+    color: #FFFFFF;
+}
+
+.darksalmon {
+    background-color: #E9967A;
+    color: #FFFFFF;
+}
+
+.darkslategray {
+    color: #2F4F4F;
+    color: #FFFFFF;
+}
+
