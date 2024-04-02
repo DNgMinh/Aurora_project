@@ -54,36 +54,47 @@
     <h2>Schedule customization</h2>
 
     <div class="form2">
-        <form id="timeForm">
-            <div>
-                <label for="weekDay">Select day that you want to customize time:</label>
-                <select name="weekDay" id="weekDay">
-                    <option value="M">Monday</option>
-                    <option value="T">Tuesday</option>
-                    <option value="W">Wednesday</option>
-                    <option value="R">Thursday</option>
-                    <option value="F">Friday</option>
-                </select>
-            </div>
-            <div>
-                <label for="dayTime">Select time that you do not want to have class:</label>
-                <select name="dayTime" id="dayTime">
-                    <option value="customize">Customize</option>
-                    <option value="allday">All day</option>
-                    <option value="morning">Morning (08:00 am-11:00 am)</option>
-                    <option value="midday">Midday (11:00 am-01:00 pm)</option>
-                    <option value="afternoon">Afternoon (01:00 pm-17:00 pm)</option>
-                    <option value="evening">Evening (17:00 pm-22:00 pm)</option>           
-                </select>
-            </div>
-            <div class="customTime">
-                <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
-                <input type="text" id="customTime" name="customTime" required>
-            </div>
-            <div>
-                <button type="button", id ="done">Done</button>
+        <form id="customizationForm">
+            <div class="customization">
+                <div>
+                    <label for="weekDay">Select day that you want to customize time:</label>
+                    <select name="weekDay" class="weekDay">
+                        <option value="M">Monday</option>
+                        <option value="T">Tuesday</option>
+                        <option value="W">Wednesday</option>
+                        <option value="R">Thursday</option>
+                        <option value="F">Friday</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="dayTime">Select time that you do not want to have class:</label>
+                    <select name="dayTime" class="dayTime">
+                        <option value="customize">Customize</option>
+                        <option value="allday">All day</option>
+                        <option value="morning">Morning (08:00 am-11:00 am)</option>
+                        <option value="midday">Midday (11:00 am-01:00 pm)</option>
+                        <option value="afternoon">Afternoon (01:00 pm-17:00 pm)</option>
+                        <option value="evening">Evening (17:00 pm-22:00 pm)</option>           
+                    </select>
+                </div>
+                <div class="customTime_div">
+                    <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
+                    <input type="text" name="customTime" class="customTime">
+                </div>
+                <br>
             </div>
         </form>
+
+        <div>
+            <button type="button", id ="removeCustomization">Remove customization</button>
+        </div>
+        <div>
+            <button type="button", id ="addCustomization">Add customization</button>
+        </div>
+        <br>
+        <div>
+            <button type="button", id ="done">Done</button>
+        </div>
     </div>
 
     <div id="customizedWays"></div>

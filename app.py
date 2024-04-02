@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import result
+import class_optimization
 # from result import calculate_result
 
 app = Flask(__name__)
@@ -34,15 +35,21 @@ def schedule():
 @app.route('/customization', methods=['POST'])
 def customization():
     try:
-        weekDay = str(request.form.get("weekDay"))              # "M" 
-        dayTime = str(request.form.get("dayTime"))              # "morning"
-        customTime = str(request.form.get("customTime"))        # '12:30 pm-01:20 pm'
-        # print(weekDay)
-        # print(dayTime)
-        # print(customTime)
-        ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(weekDay, dayTime, customTime)
-        print(ways)
-        print(best_class_list)
+        data = request.get_json()                                # This parses the JSON string into Python data structures (list)
+        customizations_list = data['customizations']             # or data.get('customization', []) to get [] if no key found  
+
+        # print("ff", customizations_list)
+        customized_class_list_ways = class_optimization.class_list_ways.copy()      # have to use this list at the first iteration
+
+        for customization in customizations_list:
+            weekDay = customization["weekDay"]                   # "M" 
+            dayTime = customization["dayTime"]                   # "morning"
+            customTime = customization["customTime"]             # '12:30 pm-01:20 pm'
+            customized_class_list_ways, ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(customized_class_list_ways, weekDay, dayTime, customTime)
+
+        # ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(weekDay, dayTime, customTime)
+        # print("fff", ways)
+        # print("ffff", best_class_list)
         # print("There are " + customizedWays + " customized ways.")
         myCustomizationResult = {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
     
@@ -51,8 +58,6 @@ def customization():
     except Exception as e:
         print(str(e))
         return jsonify({'error': str(e)}), 500
-
-
 
 
 if __name__ == '__main__':

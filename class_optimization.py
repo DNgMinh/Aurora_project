@@ -124,7 +124,7 @@ def bestClassList(ways):
 
 # return the smallest time gap as the best option
 def main(classes_list):
-    global courses, n, class_list, class_list_ways
+    global courses, n, class_list, class_list_ways # , customized_class_list_ways
     # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
     courses = classes_list          # is a list of dictionaries of courses, each course contain some classes
     n = len(courses)
@@ -134,6 +134,9 @@ def main(classes_list):
     backtracking(0)
     # print(len(class_list_ways))
     # print(class_list_ways[2])
+    
+    # customized_class_list_ways = class_list_ways.copy()
+
     smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(class_list_ways)
     
     return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
@@ -143,7 +146,8 @@ def main(classes_list):
 # customizedDay = "M" || "T" || "W" || "R" || "F"
 # validIndexes contain indexes of valid options
 # freeTime = "allday" || "morning" || "midday" || ""afternoon" || "evening"
-def customization(customizedDay, noclassTime, customTime):
+def customization(customized_class_list_ways, customizedDay, noclassTime, customTime):
+    # global customized_class_list_ways                           # call if modified. If only need to use, no need to call
     # print(customizedDay)
     # print(noclassTime)
     validIndexes = []
@@ -156,9 +160,9 @@ def customization(customizedDay, noclassTime, customTime):
 
     # print(timePeriod_dict[noclassTime])
     # print(len(class_list_ways))
-    for i in range(len(class_list_ways)):
+    for i in range(len(customized_class_list_ways)):
         valid = 1
-        for _class in class_list_ways[i]:
+        for _class in customized_class_list_ways[i]:
             # print(list(_class.values())[0][0])
             days = list(_class.values())[0][1]              # days is like "MWF"
             # print(days)
@@ -175,13 +179,15 @@ def customization(customizedDay, noclassTime, customTime):
             validIndexes.append(i)
         # break
 
-    customized_class_list_ways = []
+    new_customized_class_list_ways = []
     for i in validIndexes:
-        customized_class_list_ways.append(class_list_ways[i].copy())
+        new_customized_class_list_ways.append(customized_class_list_ways[i].copy())
+    
+    customized_class_list_ways = new_customized_class_list_ways.copy()
 
     smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(customized_class_list_ways)
 
-    return (len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
+    return (customized_class_list_ways, len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
 # class_list_ways is a list of below similar lists
 # [{'MATH1240A06': ['11:30 am-12:20 pm', 'MWF']}, {'MATH1240B12': ['04:00 pm-04:50 pm', 'T']}, {'COMP1010A01': ['12:30 pm-01:20 pm', 'MWF']}]

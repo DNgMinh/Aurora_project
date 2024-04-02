@@ -127,19 +127,32 @@ $(document).ready(function() {
 
 
     $('#done').click(function() {
-        // Get the input value
-        const weekDaySelect = $('#weekDay');
-        const weekDay = weekDaySelect.val();
-        const dayTimeSelect = $('#dayTime');
-        const dayTime = dayTimeSelect.val();
-        const customTimeInput = $('#customTime');
-        const customTime = customTimeInput.val();
+        var customizations_list = [];
 
+        $('.customization').each(function() {
+            // Get the input value
+            const weekDaySelect = $(this).find('.weekDay');
+            const weekDay = weekDaySelect.val();
+            const dayTimeSelect = $(this).find('.dayTime');
+            const dayTime = dayTimeSelect.val();
+            const customTimeInput = $(this).find('.customTime');
+            const customTime = customTimeInput.val();
+
+            customizations_list.push({
+                weekDay: weekDay,
+                dayTime: dayTime,
+                customTime: customTime
+            });
+        });
+
+        console.log(customizations_list[0]);
         // Make an AJAX request to the backend
         $.ajax({
             url: 'http://127.0.0.1:5000/customization',
             type: 'POST',
-            data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
+            contentType: 'application/json',
+            data: JSON.stringify({ customizations: customizations_list}),               // can only send text to backend
+            // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
                 // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
@@ -249,11 +262,63 @@ $(document).ready(function() {
         })
     })
 
-    $('#dayTime').change(function() {
-        if ($(this).val() === 'customize') {
-            $('.customTime').show();
-        } else {
-            $('.customTime').hide();
+    $('#addCustomization').click(function () {
+        // let newCustomization = $('.customization').first().clone();
+        let newCustomization = 
+        `
+        <div class="customization">
+                <div>
+                    <label for="weekDay">Select day that you want to customize time:</label>
+                    <select name="weekDay" class="weekDay">
+                        <option value="M">Monday</option>
+                        <option value="T">Tuesday</option>
+                        <option value="W">Wednesday</option>
+                        <option value="R">Thursday</option>
+                        <option value="F">Friday</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="dayTime">Select time that you do not want to have class:</label>
+                    <select name="dayTime" class="dayTime">
+                        <option value="customize">Customize</option>
+                        <option value="allday">All day</option>
+                        <option value="morning">Morning (08:00 am-11:00 am)</option>
+                        <option value="midday">Midday (11:00 am-01:00 pm)</option>
+                        <option value="afternoon">Afternoon (01:00 pm-17:00 pm)</option>
+                        <option value="evening">Evening (17:00 pm-22:00 pm)</option>           
+                    </select>
+                </div>
+                <div class="customTime_div">
+                    <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
+                    <input type="text" name="customTime" class="customTime">
+                </div>
+                <br>
+            </div>
+        `
+        $('#customizationForm').append(newCustomization);
+
+    });
+
+    $('#removeCustomization').click(function() {
+        const numCustomizations = $('.customization').length;
+        if (numCustomizations > 1) {
+            $('.customization:last-child').remove();                // remove the last class if there is > 1 class
         }
     });
+
+    // $('.dayTime').change(function() {
+    //     if ($(this).val() === 'customize') {
+    //         $('.customTime').show();
+    //     } else {
+    //         $('.customTime').hide();
+    //     }
+    // });
+    $(document).on('change', '.dayTime', function() {
+        if ($(this).val() === 'customize') {
+            $(this).closest('.customization').find('.customTime_div').show();
+        } else {
+            $(this).closest('.customization').find('.customTime_div').hide();
+        }
+    });
+    
 })

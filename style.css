@@ -105,7 +105,14 @@ select {
 }
 
 .darkslategray {
-    color: #2F4F4F;
+    background-color: #2F4F4F;
     color: #FFFFFF;
 }
 
+#addCustomization {
+    width: 170px;
+}
+
+#removeCustomization {
+    width: 170px;
+}
