@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $('#submit').click(function() {
 
+        $('#loading').show();
         // Get the input value
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
@@ -23,6 +24,8 @@ $(document).ready(function() {
                 console.log('Backend response:', best_class_list);
 
                 const best_class_list_str = JSON.stringify(best_class_list)
+
+                $('#loading').hide();
 
                 $("#ways").html("There are: " + response.ways + " ways.");
                 $("#smallestTimeGap").html("The best option (smallest number of class days and time gap between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");

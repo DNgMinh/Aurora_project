@@ -116,3 +116,8 @@ select {
 #removeCustomization {
     width: 170px;
 }
+
+#loading {
+    color: red;
+    font-weight: bold;
+}
