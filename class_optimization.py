@@ -76,15 +76,20 @@ def checkOverlap(time1, time2):
         return 1
     return 0
 
-# calculate time gap of each option
+# calculate and return time gap and the number of days having classes in a week of each option
 def timeGapCalculation(class_list):
     timeGap = 0
+    countDays = 0
     for day in "MTWRF":
         startTime_list = []
         endTime_list = []
+        firstCountDay = True
         for i in range(len(class_list)):
             for key, value in class_list[i].items():
                 if day in value[1]:
+                    if firstCountDay:
+                        countDays += 1
+                        firstCountDay = False
                     startTime, endTime = timeEncoder(value[0])
                     startTime_list.append(startTime)
                     endTime_list.append(endTime)
@@ -93,24 +98,28 @@ def timeGapCalculation(class_list):
         for j in range(1,len(startTime_list)):
             timeGap += startTime_list[j] - endTime_list[j-1]
                     
-    return timeGap            
-
-
+    return timeGap, countDays            
 
 # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
 # n = len(courses)
 # class_list = [0]*n
 # class_list_ways  = []
 
-# find best option with the smallest time gap of a classes list
+# find best option with the smallest time gap and number of class days of a classes list
 def bestClassList(ways):
     smallestTimeGap = 1000
+    smallestNumDays = 7
     best_class_list = []
     for _class_list in ways:
-        timeGap = timeGapCalculation(_class_list)
-        if timeGap < smallestTimeGap:
-            smallestTimeGap = timeGap
+        timeGap, countDays = timeGapCalculation(_class_list)
+        if countDays < smallestNumDays:
             best_class_list = _class_list
+            smallestNumDays = countDays
+            smallestTimeGap = timeGap
+        elif countDays == smallestNumDays:
+            if timeGap < smallestTimeGap:
+                smallestTimeGap = timeGap
+                best_class_list = _class_list
         # print(timeGap)
     
     startTime_list = []                     # will be used in frontend

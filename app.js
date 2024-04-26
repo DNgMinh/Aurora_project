@@ -25,7 +25,7 @@ $(document).ready(function() {
                 const best_class_list_str = JSON.stringify(best_class_list)
 
                 $("#ways").html("There are: " + response.ways + " ways.");
-                $("#smallestTimeGap").html("The smallest time gap is: " + response.smallestTimeGap + " hour per week.");
+                $("#smallestTimeGap").html("The best option (smallest number of class days and time gap between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");
                 $("#best_class_list").html("With this schedule: " + best_class_list_str);
 
                 // return indexes of values of an array by ascending order
@@ -162,7 +162,7 @@ $(document).ready(function() {
                 const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
 
                 $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
-                $("#smallestCustomizedTimeGap").html("The smallest time gap is: " + response.smallestCustomizedTimeGap + " hour per week.");
+                $("#smallestCustomizedTimeGap").html("The best option (smallest number of class days and time gap between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
                 $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
 
                 // return indexes of values of an array by ascending order
