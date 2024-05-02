@@ -110,26 +110,35 @@ def bestClassList(ways):
     smallestTimeGap = 1000
     smallestNumDays = 7
     best_class_list = []
+    i = -1
     for _class_list in ways:
+        i += 1
         timeGap, countDays = timeGapCalculation(_class_list)
         if countDays < smallestNumDays:
             best_class_list = _class_list
             smallestNumDays = countDays
             smallestTimeGap = timeGap
+            best_class_list_index = i
         elif countDays == smallestNumDays:
             if timeGap < smallestTimeGap:
                 smallestTimeGap = timeGap
                 best_class_list = _class_list
+                best_class_list_index = i
         # print(timeGap)
     
+    startTime_list, endTime_list = startEndTimeList(best_class_list)                # will be used in frontend
+    return smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index
+
+# return startTime_list and endTime_list of an option
+def startEndTimeList(class_list): 
     startTime_list = []                     # will be used in frontend
     endTime_list = []
-    for i in range(len(best_class_list)):
-        for key, value in best_class_list[i].items():
+    for i in range(len(class_list)):
+        for key, value in class_list[i].items():
             startTime, endTime = timeEncoder(value[0])
             startTime_list.append(startTime)
             endTime_list.append(endTime)
-    return smallestTimeGap, best_class_list, startTime_list, endTime_list
+    return startTime_list, endTime_list
 
 # return the smallest time gap as the best option
 def main(classes_list):
@@ -146,7 +155,10 @@ def main(classes_list):
     
     # customized_class_list_ways = class_list_ways.copy()
 
-    smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(class_list_ways)
+    smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(class_list_ways)
+
+    class_list_ways[best_class_list_index] = class_list_ways[0].copy()
+    class_list_ways[0] = best_class_list.copy()
     
     return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
@@ -156,6 +168,7 @@ def main(classes_list):
 # validIndexes contain indexes of valid options
 # freeTime = "allday" || "morning" || "midday" || ""afternoon" || "evening"
 def customization(customized_class_list_ways, customizedDay, noclassTime, customTime):
+    global new_customized_class_list_ways
     # global customized_class_list_ways                           # call if modified. If only need to use, no need to call
     # print(customizedDay)
     # print(noclassTime)
@@ -194,7 +207,10 @@ def customization(customized_class_list_ways, customizedDay, noclassTime, custom
     
     customized_class_list_ways = new_customized_class_list_ways.copy()
 
-    smallestTimeGap, best_class_list, startTime_list, endTime_list = bestClassList(customized_class_list_ways)
+    smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(customized_class_list_ways)
+
+    new_customized_class_list_ways[best_class_list_index] = new_customized_class_list_ways[0].copy()
+    new_customized_class_list_ways[0] = best_class_list.copy()
 
     return (customized_class_list_ways, len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 

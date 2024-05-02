@@ -1,23 +1,21 @@
 # Aurora scheduler
 
-This application will take in user input which are courses that they want to take in a semester. Then, by using data of course schedules scrapped from Aurora, it will recommend options for your registration (no overlapping class). It will also show the best option which has the smallest time gap between classes in a week. 
+This website helps UofM students plan their class schedules easily and conveniently before registration. 
 
-The algorithm used for solving overlapping is backtracking.
+It takes in user input, which are the courses they want to take in a semester (currently not applicable for Summer terms). Then, using real-time data scrapped from Aurora (using contributors' account), it shows all possible scheduling options for the user's registration (no class overlaps). It also recommends the best option with the fewest class days and minimal time gaps between classes. 
 
-### Frontend
+The customization section allows the user to view schedules that accommodate their specific time preferences.
 
-Include `index.html` and `app.js`
-
-### Backend
-
-1. `class_optimization.py`: options including the best option for class scheduling. The backtracking algorithm is `backtracking` method.
-2. `schedule_retrieve.py`: scrapping Aurora webpage, retrieving courses' schedules. 
-3. `result.py`: return result to send to frontend.
-4. `app.py`: server.
-5. `test.py`: ignore. Just a test file.
+This website is still under development with more features and improvements to come. The source code for this project is currently not publicly available.
 
 ### Usage
 
-* Run `app.py` to create a local server.
-* Open live server of `index.html`.
-* Unfortunately, we don't have enough time for some other features as well as a better UI. Enjoy!
+* Enter the term and courses then click `Submit`.
+* Using navigation buttons to browse through different schedule options.
+* Select a time period (days and times) when classes should not be scheduled, then click `Done`.
+* Using navigation buttons to view other customized options.
+
+### Contributors
+
+* [Duc Do](https://github.com/ducdonghiem) - dod2@myumanitoba.ca
+* [Minh Do](https://github.com/DNgMinh) - mom1@myumanitoba.ca
