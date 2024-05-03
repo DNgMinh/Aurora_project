@@ -10,7 +10,7 @@ $(document).ready(function() {
 
         // Make an AJAX request to the backend
         $.ajax({
-            url: 'https://aurorascheduler.online/schedule',
+            url: 'http://127.0.0.1:5000/schedule',
             type: 'POST',
             // contentType: 'application/json',
             // data: JSON.stringify({ courses }),      // key is courses
@@ -194,7 +194,7 @@ $(document).ready(function() {
         console.log(customizations_list[0]);
         // Make an AJAX request to the backend
         $.ajax({
-	    url: 'https://aurorascheduler.online/customization',
+	    url: 'http://127.0.0.1:5000/customization',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ customizations: customizations_list}),               // can only send text to backend
