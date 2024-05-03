@@ -40,7 +40,9 @@ class_list = [{'A01': ['12:30 pm-01:20 pm', 'MWF']}, {'B03': ['11:30 am-12:20 pm
 #     for key, value in class_list[i].items():
 #         print(key)
 
-# numbers = [1, 2, 3, 4, 5]
+numbers = [[1, 2], 3, 4, 5]
+numbers[0] = numbers[0].copy()
+print(numbers)
 # doubled_numbers = map(lambda x: x * 2, numbers)
 # print(doubled_numbers)
 # print(list(doubled_numbers))
@@ -54,7 +56,7 @@ class_list = [{'A01': ['12:30 pm-01:20 pm', 'MWF']}, {'B03': ['11:30 am-12:20 pm
 # test_lst.append(None)
 # print(test_lst)
 
-import class_optimization
+# import class_optimization
 
-print("T" in "MWF")
-print(class_optimization.checkOverlap("01:00 pm-17:00 pm", '01:30 pm-02:20 pm'))
+# print("T" in "MWF")
+# print(class_optimization.checkOverlap("01:00 pm-17:00 pm", '01:30 pm-02:20 pm'))

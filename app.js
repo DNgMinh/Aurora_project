@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $('#submit').click(function() {
-
+        currentScheduleIndex1 = 0;
         $('#loading').show();
         // Get the input value
         const coursesInput = $('#courses');
@@ -26,6 +26,7 @@ $(document).ready(function() {
                 const best_class_list_str = JSON.stringify(best_class_list)
 
                 $('#loading').hide();
+                $("#scheduleInfo1").html('');
 
                 $("#ways").html("There are: " + response.ways + " ways.");
                 $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");
@@ -174,6 +175,9 @@ $(document).ready(function() {
 
     $('#done').click(function() {
         var customizations_list = [];
+        currentScheduleIndex2 = 0;
+
+        $("#scheduleInfo2").html('');
 
         $('.customization').each(function() {
             // Get the input value

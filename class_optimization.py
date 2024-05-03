@@ -110,19 +110,20 @@ def bestClassList(ways):
     smallestTimeGap = 1000
     smallestNumDays = 7
     best_class_list = []
+    best_class_list_index = 0
     i = -1
     for _class_list in ways:
         i += 1
         timeGap, countDays = timeGapCalculation(_class_list)
         if countDays < smallestNumDays:
-            best_class_list = _class_list
+            best_class_list = _class_list.copy()
             smallestNumDays = countDays
             smallestTimeGap = timeGap
             best_class_list_index = i
         elif countDays == smallestNumDays:
             if timeGap < smallestTimeGap:
                 smallestTimeGap = timeGap
-                best_class_list = _class_list
+                best_class_list = _class_list.copy()
                 best_class_list_index = i
         # print(timeGap)
     
@@ -209,8 +210,10 @@ def customization(customized_class_list_ways, customizedDay, noclassTime, custom
 
     smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(customized_class_list_ways)
 
-    new_customized_class_list_ways[best_class_list_index] = new_customized_class_list_ways[0].copy()
-    new_customized_class_list_ways[0] = best_class_list.copy()
+    # to avoid error list index out of range
+    if len(new_customized_class_list_ways) > 0:
+        new_customized_class_list_ways[best_class_list_index] = new_customized_class_list_ways[0].copy()
+        new_customized_class_list_ways[0] = best_class_list.copy()
 
     return (customized_class_list_ways, len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
