@@ -59,6 +59,55 @@ def customization():
         print(str(e))
         return jsonify({'error': str(e)}), 500
 
+@app.route('/loadSchedule', methods=['POST'])
+def loadSchedule():
+    try:
+        data = request.get_json()                                
+        scheduleIndex = int(data['scheduleIndex'])
+
+        class_list_ways = class_optimization.class_list_ways.copy()
+
+        if scheduleIndex == len(class_list_ways):
+            scheduleIndex = 0
+        elif scheduleIndex < 0:
+            scheduleIndex = len(class_list_ways) - 1
+
+        current_class_list = class_list_ways[scheduleIndex]
+        startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
+        timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
+        timeGap = format(timeGap, ".2f")
+
+        myScheduleResult = {'scheduleIndex': scheduleIndex, 'timeGap': timeGap, 'currentSchedule': current_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        return jsonify(myScheduleResult)
+
+    except Exception as e:
+        print(str(e))
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/loadCustomizedSchedule', methods=['POST'])
+def loadCustomizedSchedule():
+    try:
+        data = request.get_json()                                
+        scheduleIndex = int(data['scheduleIndex'])
+
+        class_list_ways = class_optimization.new_customized_class_list_ways.copy()
+
+        if scheduleIndex == len(class_list_ways):
+            scheduleIndex = 0
+        elif scheduleIndex < 0:
+            scheduleIndex = len(class_list_ways) - 1
+
+        current_class_list = class_list_ways[scheduleIndex]
+        startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
+        timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
+        timeGap = format(timeGap, ".2f")
+
+        myScheduleResult = {'scheduleIndex': scheduleIndex, 'timeGap': timeGap, 'currentSchedule': current_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        return jsonify(myScheduleResult)
+
+    except Exception as e:
+        print(str(e))
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run()

@@ -13,15 +13,20 @@
 <body>
 
     <h1>Aurora Scheduler</h1>
+    <a href="README.pdf" target="_blank">README</a>
+    <!-- <button onclick="window.open('README.md')">View README</button> -->
+
     <div class="form">
         <form id="courseForm">
             <div>
                 <label for="term">Enter term:</label>
                 <input type="text" id="term" name="term" required>
+                e.g., 202410 for Winter2024, 202390 for Fall2023
             </div>
             <div>
                 <label for="courses">Enter courses (space-separated):</label>
                 <input type="text" id="courses" name="courses" required>
+                e.g., COMP1010 COMP1006 MATH1240 STAT2150 STAT2400
             </div>
             <div>
                 <button type="button", id ="submit">Submit</button>
@@ -37,6 +42,8 @@
 
     <h2>Schedule Table</h2>
 
+    <div id="scheduleInfo1"></div>
+
     <table>
         <thead>
             <tr>
@@ -51,6 +58,17 @@
         <tbody class = "newTable">
         </tbody>
     </table>
+
+    <div>
+        <button id="prevSchedule1">&lt;</button>
+        <button id="nextSchedule1">&gt;</button>
+        Navigating between schedule options
+    </div>
+    <br>
+    <div>
+        <button id="return1">Return</button>
+        Return to the first (best) option
+    </div>
 
     <h2>Schedule customization</h2>
 
@@ -81,6 +99,7 @@
                 <div class="customTime_div">
                     <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
                     <input type="text" name="customTime" class="customTime">
+                    e.g., 11:00 am-03:00 pm
                 </div>
                 <br>
             </div>
@@ -104,6 +123,8 @@
 
     <h3>Customized Schedule Table</h3>
 
+    <div id="scheduleInfo2"></div>
+
     <table>
         <thead>
             <tr>
@@ -118,6 +139,17 @@
         <tbody class = "myCustomizedTable">
         </tbody>
     </table>
+
+    <div>
+        <button id="prevSchedule2">&lt;</button>
+        <button id="nextSchedule2">&gt;</button>
+        Navigating between schedule options
+    </div>
+    <br>
+    <div>
+        <button id="return2">Return</button>
+        Return to the first (best) option
+    </div>
 
 </body>
 </html>

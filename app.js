@@ -28,104 +28,147 @@ $(document).ready(function() {
                 $('#loading').hide();
 
                 $("#ways").html("There are: " + response.ways + " ways.");
-                $("#smallestTimeGap").html("The best option (smallest number of class days and time gap between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");
+                $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");
                 $("#best_class_list").html("With this schedule: " + best_class_list_str);
 
-                // return indexes of values of an array by ascending order
-                function sortedIndexes(array) {
-                    const indexedArray = array.map((value, index) => ({ value:value, index:index }));
-                    indexedArray.sort((a, b) => a.value - b.value);
-                    const sortedIndexes = indexedArray.map(item => item.index);
-                    return sortedIndexes;
-                }
-                
-                const startTime_sorted_indexes = sortedIndexes(response.startTime_list);
-                const endTime_sorted_indexes = sortedIndexes(response.endTime_list);
-                    
-                $('.newTable').empty(); 
-                let soonest_time = response.startTime_list[startTime_sorted_indexes[0]] | 0;
-                let latest_time = response.endTime_list[endTime_sorted_indexes[endTime_sorted_indexes.length-1]] | 0;
-                for (let j = soonest_time; j <= latest_time; j++) {
-                    let first_column = `
-                    <tr value = "${j}" class="noBorder">
-                        <td style = "background-color: #f2f2f2;"></td>                
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.25}" class="noBorder">
-                        <td class="cell" style = "background-color: #f2f2f2;"><div class="hour"><strong>${j}:00</strong></div></td>
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.5}" class="noBorder">
-                        <td style = "background-color: #f2f2f2;"></td>
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.75}" class="noBorder">
-                        <td style="background-color: #f2f2f2; border-bottom: 1px solid #ddd;"></td>
-                        <td class = "M" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "T" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "W" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "R" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "F" style="border-bottom: 1px solid #ddd;"></td>
-                    </tr>`;
-
-                    $('.newTable').append(first_column);
-                }
-                for (let j = 0; j < response.startTime_list.length; j++) {
-                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
-                    let round_start_time = response.startTime_list[j] % 0.25 !== 0 ? response.startTime_list[j] - (response.startTime_list[j] % 0.25) : response.startTime_list[j];
-                    let round_end_time = response.endTime_list[j] % 0.25 !==0 ? response.endTime_list[j] - (response.endTime_list[j] % 0.25) + 0.25 : response.endTime_list[j];
-                    const _class = best_class_list[j];    
-                    const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
-                    const classSection = Object.keys(_class)[0].slice(-3);
-                    const classTime = _class[Object.keys(_class)[0]][0];                    
-                    const days = _class[Object.keys(_class)[0]][1];
-                    let table = document.getElementsByClassName("newTable")[0];
-                    let time = round_start_time;
-                    while (time < round_end_time) {
-                        time_string = time.toString();
-                        let row = table.querySelector(`[value="${time_string}"]`);
-                        console.log(row);
-                        for (let i = 0; i < days.length; i++) {
-                            let cell = row.querySelector(`.${days[i]}`);
-                            if ((round_end_time + round_start_time - 0.25)/2 - time < 0.25 && (round_end_time + round_start_time - 0.25)/2 - time >= 0) {
-                                cell.innerHTML = classSection; 
-                                let above_row = table.querySelector(`[value="${(time-0.25).toString()}"]`);
-                                let above_cell = above_row.querySelector(`.${days[i]}`);
-                                above_cell.innerHTML = className;
-                                let below_row = table.querySelector(`[value="${(time+0.25).toString()}"]`);
-                                let below_cell = below_row.querySelector(`.${days[i]}`);
-                                below_cell.innerHTML = classTime;
-                            }                            
-                            cell.classList.add(color_list[j]); 
-                            if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
-                            if (time == round_end_time - 0.25 && round_end_time !== response.endTime_list[j]) {
-                                let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
-                                cell.style.position = "relative";
-                                cell.innerHTML += divHTML;
-                                cell.style.backgroundColor = "transparent";
-                            }
-                        }
-                        time += 0.25;
-                    }
-                }
+                drawScheduleTable("newTable", best_class_list, response.startTime_list, response.endTime_list)
             },
 
             error: function(error) {
                 console.error('Error:', error);
             }
         })
+    })
+
+    function drawScheduleTable(tableClassName, class_list, startTime_list, endTime_list) {
+
+        // return indexes of values of an array by ascending order
+        function sortedIndexes(array) {
+            const indexedArray = array.map((value, index) => ({ value:value, index:index }));
+            indexedArray.sort((a, b) => a.value - b.value);
+            const sortedIndexes = indexedArray.map(item => item.index);
+            return sortedIndexes;
+        }
+
+        const startTime_sorted_indexes = sortedIndexes(startTime_list);
+        const endTime_sorted_indexes = sortedIndexes(endTime_list);
+
+        $(`.${tableClassName}`).empty(); 
+        let soonest_time = startTime_list[startTime_sorted_indexes[0]] | 0;
+        let latest_time = endTime_list[endTime_sorted_indexes[endTime_sorted_indexes.length-1]] | 0;
+        for (let j = soonest_time; j <= latest_time; j++) {
+            let first_column = `
+            <tr value = "${j}" class="noBorder">
+                <td style = "background-color: #f2f2f2;"></td>                
+                <td class = "M"></td>
+                <td class = "T"></td>
+                <td class = "W"></td>
+                <td class = "R"></td>
+                <td class = "F"></td>
+            </tr>
+            <tr value = "${j+0.25}" class="noBorder">
+                <td class="cell" style = "background-color: #f2f2f2;"><div class="hour"><strong>${j}:00</strong></div></td>
+                <td class = "M"></td>
+                <td class = "T"></td>
+                <td class = "W"></td>
+                <td class = "R"></td>
+                <td class = "F"></td>
+            </tr>
+            <tr value = "${j+0.5}" class="noBorder">
+                <td style = "background-color: #f2f2f2;"></td>
+                <td class = "M"></td>
+                <td class = "T"></td>
+                <td class = "W"></td>
+                <td class = "R"></td>
+                <td class = "F"></td>
+            </tr>
+            <tr value = "${j+0.75}" class="noBorder">
+                <td style="background-color: #f2f2f2; border-bottom: 1px solid #ddd;"></td>
+                <td class = "M" style="border-bottom: 1px solid #ddd;"></td>
+                <td class = "T" style="border-bottom: 1px solid #ddd;"></td>
+                <td class = "W" style="border-bottom: 1px solid #ddd;"></td>
+                <td class = "R" style="border-bottom: 1px solid #ddd;"></td>
+                <td class = "F" style="border-bottom: 1px solid #ddd;"></td>
+            </tr>`;
+
+            $(`.${tableClassName}`).append(first_column);
+        }
+        for (let j = 0; j < startTime_list.length; j++) {
+            let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
+            let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
+            let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
+            const _class = class_list[j];
+            const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
+            const classSection = Object.keys(_class)[0].slice(-3);
+            const classTime = _class[Object.keys(_class)[0]][0];                    
+            const days = _class[Object.keys(_class)[0]][1];
+            let table = document.getElementsByClassName(`${tableClassName}`)[0];
+            let time = round_start_time;
+            while (time < round_end_time) {
+                let time_string = time.toString();
+                let row = table.querySelector(`[value="${time_string}"]`);
+                console.log(row);
+                for (let i = 0; i < days.length; i++) {
+                    let cell = row.querySelector(`.${days[i]}`);
+                    if ((round_end_time + round_start_time - 0.25)/2 - time < 0.25 && (round_end_time + round_start_time - 0.25)/2 - time >= 0) {
+                        cell.innerHTML = classSection; 
+                        let above_row = table.querySelector(`[value="${(time-0.25).toString()}"]`);
+                        let above_cell = above_row.querySelector(`.${days[i]}`);
+                        above_cell.innerHTML = className;
+                        let below_row = table.querySelector(`[value="${(time+0.25).toString()}"]`);
+                        let below_cell = below_row.querySelector(`.${days[i]}`);
+                        below_cell.innerHTML = classTime;
+                    }
+                    cell.classList.add(color_list[j]); 
+                    if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
+                    if (time == round_end_time - 0.25 && round_end_time !== endTime_list[j]) {
+                        let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
+                        cell.style.position = "relative";
+                        cell.innerHTML += divHTML;
+                        cell.style.backgroundColor = "transparent";
+                    }
+                }
+                time += 0.25;
+            }
+        }
+    }
+    
+    var currentScheduleIndex1 = 0;
+
+    function loadSchedule(index) {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/loadSchedule',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ scheduleIndex: index }),
+
+            success: function(response) {
+                const current_class_list = response.currentSchedule;
+                currentScheduleIndex1 = response.scheduleIndex;
+                
+                $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex1+1) + " with the time gap = " + response.timeGap + " hrs/week");
+                drawScheduleTable("newTable", current_class_list, response.startTime_list, response.endTime_list);
+            },
+
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    $('#nextSchedule1').click(function() {
+        currentScheduleIndex1++;
+        loadSchedule(currentScheduleIndex1);
+    })
+
+    $('#prevSchedule1').click(function() {
+        currentScheduleIndex1--;
+        loadSchedule(currentScheduleIndex1);
+    })
+
+    $('#return1').click(function() {
+        currentScheduleIndex1 = 0;
+        loadSchedule(currentScheduleIndex1);
     })
 
 
@@ -165,98 +208,10 @@ $(document).ready(function() {
                 const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
 
                 $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
-                $("#smallestCustomizedTimeGap").html("The best option (smallest number of class days and time gap between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
+                $("#smallestCustomizedTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
                 $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
 
-                // return indexes of values of an array by ascending order
-                function sortedIndexes(array) {
-                    const indexedArray = array.map((value, index) => ({ value:value, index:index }));
-                    indexedArray.sort((a, b) => a.value - b.value);
-                    const sortedIndexes = indexedArray.map(item => item.index);
-                    return sortedIndexes;
-                }
-                
-                const startTime_sorted_indexes = sortedIndexes(response.startTime_list);
-                const endTime_sorted_indexes = sortedIndexes(response.endTime_list);
-
-                $('.myCustomizedTable').empty(); 
-                let soonest_time = response.startTime_list[startTime_sorted_indexes[0]] | 0;
-                let latest_time = response.endTime_list[endTime_sorted_indexes[endTime_sorted_indexes.length-1]] | 0;
-                for (let j = soonest_time; j <= latest_time; j++) {
-                    let first_column = `
-                    <tr value = "${j}" class="noBorder">
-                        <td style = "background-color: #f2f2f2;"></td>                
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.25}" class="noBorder">
-                        <td class="cell" style = "background-color: #f2f2f2;"><div class="hour"><strong>${j}:00</strong></div></td>
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.5}" class="noBorder">
-                        <td style = "background-color: #f2f2f2;"></td>
-                        <td class = "M"></td>
-                        <td class = "T"></td>
-                        <td class = "W"></td>
-                        <td class = "R"></td>
-                        <td class = "F"></td>
-                    </tr>
-                    <tr value = "${j+0.75}" class="noBorder">
-                        <td style="background-color: #f2f2f2; border-bottom: 1px solid #ddd;"></td>
-                        <td class = "M" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "T" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "W" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "R" style="border-bottom: 1px solid #ddd;"></td>
-                        <td class = "F" style="border-bottom: 1px solid #ddd;"></td>
-                    </tr>`;
-
-                    $('.myCustomizedTable').append(first_column);
-                }
-                for (let j = 0; j < response.startTime_list.length; j++) {
-                    let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
-                    let round_start_time = response.startTime_list[j] % 0.25 !== 0 ? response.startTime_list[j] - (response.startTime_list[j] % 0.25) : response.startTime_list[j];
-                    let round_end_time = response.endTime_list[j] % 0.25 !==0 ? response.endTime_list[j] - (response.endTime_list[j] % 0.25) + 0.25 : response.endTime_list[j];
-                    const _class = best_customized_class_list[j];
-                    const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
-                    const classSection = Object.keys(_class)[0].slice(-3);
-                    const classTime = _class[Object.keys(_class)[0]][0];                    
-                    const days = _class[Object.keys(_class)[0]][1];
-                    let table = document.getElementsByClassName("myCustomizedTable")[0];
-                    let time = round_start_time;
-                    while (time < round_end_time) {
-                        let time_string = time.toString();
-                        let row = table.querySelector(`[value="${time_string}"]`);
-                        console.log(row);
-                        for (let i = 0; i < days.length; i++) {
-                            let cell = row.querySelector(`.${days[i]}`);
-                            if ((round_end_time + round_start_time - 0.25)/2 - time < 0.25 && (round_end_time + round_start_time - 0.25)/2 - time >= 0) {
-                                cell.innerHTML = classSection; 
-                                let above_row = table.querySelector(`[value="${(time-0.25).toString()}"]`);
-                                let above_cell = above_row.querySelector(`.${days[i]}`);
-                                above_cell.innerHTML = className;
-                                let below_row = table.querySelector(`[value="${(time+0.25).toString()}"]`);
-                                let below_cell = below_row.querySelector(`.${days[i]}`);
-                                below_cell.innerHTML = classTime;
-                            }
-                            cell.classList.add(color_list[j]); 
-                            if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
-                            if (time == round_end_time - 0.25 && round_end_time !== response.endTime_list[j]) {
-                                let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
-                                cell.style.position = "relative";
-                                cell.innerHTML += divHTML;
-                                cell.style.backgroundColor = "transparent";
-                            }
-                        }
-                        time += 0.25;
-                    }
-                }
+                drawScheduleTable("myCustomizedTable", best_customized_class_list, response.startTime_list, response.endTime_list)
             },
 
             error: function(error) {
@@ -264,6 +219,45 @@ $(document).ready(function() {
             }
         })
     })
+
+    var currentScheduleIndex2 = 0;
+
+    function loadCustomizedSchedule(index) {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/loadCustomizedSchedule',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ scheduleIndex: index }),
+
+            success: function(response) {
+                const current_class_list = response.currentSchedule;
+                currentScheduleIndex2 = response.scheduleIndex;
+                
+                $("#scheduleInfo2").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.timeGap + " hrs/week");
+                drawScheduleTable("myCustomizedTable", current_class_list, response.startTime_list, response.endTime_list);
+            },
+
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    $('#nextSchedule2').click(function() {
+        currentScheduleIndex2++;
+        loadCustomizedSchedule(currentScheduleIndex2);
+    })
+
+    $('#prevSchedule2').click(function() {
+        currentScheduleIndex2--;
+        loadCustomizedSchedule(currentScheduleIndex2);
+    })
+
+    $('#return2').click(function() {
+        currentScheduleIndex2 = 0;
+        loadCustomizedSchedule(currentScheduleIndex2);
+    })
+
 
     $('#addCustomization').click(function () {
         // let newCustomization = $('.customization').first().clone();
