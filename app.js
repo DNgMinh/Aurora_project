@@ -137,7 +137,7 @@ $(document).ready(function() {
 
     function loadSchedule(index) {
         $.ajax({
-            url: 'http://127.0.0.1:5000/loadSchedule',
+            url: 'http://aurorascheduler.online/loadSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ scheduleIndex: index }),
@@ -224,7 +224,7 @@ $(document).ready(function() {
 
     function loadCustomizedSchedule(index) {
         $.ajax({
-            url: 'http://127.0.0.1:5000/loadCustomizedSchedule',
+            url: 'http://aurorascheduler.online/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ scheduleIndex: index }),
