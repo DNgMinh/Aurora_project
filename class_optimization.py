@@ -45,18 +45,18 @@ def timeEncoder(time):
 #                 backtracking(k+1)                             # if not, moving to the next level
 # backtracking(0)
 
-def backtracking(k):
-    for key, value in courses[k].items():
-        if checkEligibility(value, k):
+def backtracking(k, classes_list, class_list, class_list_ways, n):
+    for key, value in classes_list[k].items():
+        if checkEligibility(value, k, class_list):
             class_list[k] = {key: value}
             if k == n - 1:
                 class_list_ways.append(class_list.copy())           # if no copy() then it is a reference damn python
             else:
-                backtracking(k+1)
+                backtracking(k+1, classes_list, class_list, class_list_ways, n)
 
 
 # check eligibility for backtracking
-def checkEligibility(value, k):
+def checkEligibility(value, k, class_list):
     if k == 0:
         return 1
     else:
@@ -143,14 +143,14 @@ def startEndTimeList(class_list):
 
 # return the smallest time gap as the best option
 def main(classes_list):
-    global courses, n, class_list, class_list_ways # , customized_class_list_ways
+    # global courses, n, class_list, class_list_ways # , customized_class_list_ways
     # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
-    courses = classes_list          # is a list of dictionaries of courses, each course contain some classes
-    n = len(courses)
+    # courses = classes_list          # is a list of dictionaries of courses, each course contains some classes
+    n = len(classes_list)
     class_list = [0]*n
     class_list_ways  = []
     
-    backtracking(0)
+    backtracking(0, classes_list, class_list, class_list_ways, n)       # class_list_ways will be modified after this line
     # print(len(class_list_ways))
     # print(class_list_ways[2])
     
@@ -161,7 +161,7 @@ def main(classes_list):
     class_list_ways[best_class_list_index] = class_list_ways[0].copy()
     class_list_ways[0] = best_class_list.copy()
     
-    return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
+    return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list, class_list_ways)
 
 # main()
 
@@ -169,7 +169,7 @@ def main(classes_list):
 # validIndexes contain indexes of valid options
 # freeTime = "allday" || "morning" || "midday" || ""afternoon" || "evening"
 def customization(customized_class_list_ways, customizedDay, noclassTime, customTime):
-    global new_customized_class_list_ways
+    # global new_customized_class_list_ways
     # global customized_class_list_ways                           # call if modified. If only need to use, no need to call
     # print(customizedDay)
     # print(noclassTime)
@@ -211,9 +211,12 @@ def customization(customized_class_list_ways, customizedDay, noclassTime, custom
     smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(customized_class_list_ways)
 
     # to avoid error list index out of range
-    if len(new_customized_class_list_ways) > 0:
-        new_customized_class_list_ways[best_class_list_index] = new_customized_class_list_ways[0].copy()
-        new_customized_class_list_ways[0] = best_class_list.copy()
+    # if len(new_customized_class_list_ways) > 0:
+    #     new_customized_class_list_ways[best_class_list_index] = new_customized_class_list_ways[0].copy()
+    #     new_customized_class_list_ways[0] = best_class_list.copy()
+    if len(customized_class_list_ways) > 0:
+        customized_class_list_ways[best_class_list_index] = customized_class_list_ways[0].copy()
+        customized_class_list_ways[0] = best_class_list.copy()
 
     return (customized_class_list_ways, len(customized_class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list)
 
