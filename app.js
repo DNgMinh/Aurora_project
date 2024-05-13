@@ -184,6 +184,7 @@ $(document).ready(function() {
 
 
     $('#done').click(function() {
+        $('#loading2').show();
         var customizations_list = [];
         currentScheduleIndex2 = 0;
 
@@ -215,6 +216,7 @@ $(document).ready(function() {
             // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
+                $('#loading2').hide();
                 window.customized_class_list_ways = response.customized_class_list_ways;
                 // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
                 console.log("There are ", response.customizedWays)
