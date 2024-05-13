@@ -39,10 +39,22 @@ class_list = [{'A01': ['12:30 pm-01:20 pm', 'MWF']}, {'B03': ['11:30 am-12:20 pm
 # for i in range(len(class_list)):
 #     for key, value in class_list[i].items():
 #         print(key)
+def doSmth():
+    numbers = [[1, 2], 3, 4, 5]
+    modifyList(numbers)
+    print(numbers)
+# numbers[0] = numbers[0].copy()
+# print(numbers)
 
-numbers = [[1, 2], 3, 4, 5]
-numbers[0] = numbers[0].copy()
-print(numbers)
+def modifyList(lst):
+    lst[0] = 1
+
+doSmth()
+
+lst = [1, 2, 3]
+lst = list(lst)
+print(lst)
+
 # doubled_numbers = map(lambda x: x * 2, numbers)
 # print(doubled_numbers)
 # print(list(doubled_numbers))

@@ -17,6 +17,8 @@ $(document).ready(function() {
             data: { courses: courses, term : term },
 
             success: function(response) {
+                window.class_list_ways = response.class_list_ways;
+
                 console.log('Backend response:', response.ways);
                 console.log('Backend response:', response.smallestTimeGap);
 
@@ -137,16 +139,24 @@ $(document).ready(function() {
     var currentScheduleIndex1 = 0;
 
     function loadSchedule(index) {
+
+        if (index == class_list_ways.length) {
+            index = 0;
+        }
+        else if (index < 0) {
+            index = class_list_ways.length - 1;
+        }        
+
+        currentScheduleIndex1 = index;
+        const current_class_list = class_list_ways[index];
+
         $.ajax({
             url: 'https://aurorascheduler.online/loadSchedule',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ scheduleIndex: index }),
+            data: JSON.stringify({ current_class_list: current_class_list }),
 
             success: function(response) {
-                const current_class_list = response.currentSchedule;
-                currentScheduleIndex1 = response.scheduleIndex;
-                
                 $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex1+1) + " with the time gap = " + response.timeGap + " hrs/week");
                 drawScheduleTable("newTable", current_class_list, response.startTime_list, response.endTime_list);
             },
@@ -201,10 +211,11 @@ $(document).ready(function() {
 	    url: 'https://aurorascheduler.online/customization',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ customizations: customizations_list}),               // can only send text to backend
+            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
             // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
+                window.customized_class_list_ways = response.customized_class_list_ways;
                 // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
                 console.log("There are ", response.customizedWays)
                 const best_customized_class_list = response.best_customized_class_list;
@@ -227,16 +238,24 @@ $(document).ready(function() {
     var currentScheduleIndex2 = 0;
 
     function loadCustomizedSchedule(index) {
+
+        if (index == customized_class_list_ways.length) {
+            index = 0;
+        }
+        else if (index < 0) {
+            index = customized_class_list_ways.length - 1;
+        }        
+
+        currentScheduleIndex2 = index;
+        const current_class_list = customized_class_list_ways[index];
+
         $.ajax({
             url: 'https://aurorascheduler.online/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ scheduleIndex: index }),
+            data: JSON.stringify({ current_class_list: current_class_list }),
 
-            success: function(response) {
-                const current_class_list = response.currentSchedule;
-                currentScheduleIndex2 = response.scheduleIndex;
-                
+            success: function(response) {       
                 $("#scheduleInfo2").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.timeGap + " hrs/week");
                 drawScheduleTable("myCustomizedTable", current_class_list, response.startTime_list, response.endTime_list);
             },

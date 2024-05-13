@@ -26,9 +26,9 @@ def schedule():
             courses_list.append({key : value})
 
         # print(courses_list)
-        ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list = result.calculate_result(term, courses_list)
+        ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
         print(printResult, flush=True)
-        myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
         # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
         return jsonify(myResult)
 
@@ -43,7 +43,8 @@ def customization():
         customizations_list = data['customizations']             # or data.get('customization', []) to get [] if no key found  
 
         # print("ff", customizations_list)
-        customized_class_list_ways = class_optimization.class_list_ways.copy()      # have to use this list at the first iteration
+        # customized_class_list_ways = class_optimization.class_list_ways.copy()      # have to use this list at the first iteration
+        customized_class_list_ways = list(data['class_list_ways']).copy()
 
         for customization in customizations_list:
             weekDay = customization["weekDay"]                   # "M" 
@@ -55,7 +56,7 @@ def customization():
         # print("fff", ways)
         # print("ffff", best_class_list)
         # print("There are " + customizedWays + " customized ways.")
-        myCustomizationResult = {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        myCustomizationResult = {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'customized_class_list_ways': customized_class_list_ways}
     
         return jsonify(myCustomizationResult)
     
@@ -67,21 +68,23 @@ def customization():
 def loadSchedule():
     try:
         data = request.get_json()                                
-        scheduleIndex = int(data['scheduleIndex'])
+        # scheduleIndex = int(data['scheduleIndex'])
 
-        class_list_ways = class_optimization.class_list_ways.copy()
+        current_class_list = list(data['current_class_list'])
 
-        if scheduleIndex == len(class_list_ways):
-            scheduleIndex = 0
-        elif scheduleIndex < 0:
-            scheduleIndex = len(class_list_ways) - 1
+        # class_list_ways = class_optimization.class_list_ways.copy()
 
-        current_class_list = class_list_ways[scheduleIndex]
+        # if scheduleIndex == len(class_list_ways):
+        #     scheduleIndex = 0
+        # elif scheduleIndex < 0:
+        #     scheduleIndex = len(class_list_ways) - 1
+
+        # current_class_list = class_list_ways[scheduleIndex]
         startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
         timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
         timeGap = format(timeGap, ".2f")
 
-        myScheduleResult = {'scheduleIndex': scheduleIndex, 'timeGap': timeGap, 'currentSchedule': current_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        myScheduleResult = {'timeGap': timeGap, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
         return jsonify(myScheduleResult)
 
     except Exception as e:
@@ -92,21 +95,14 @@ def loadSchedule():
 def loadCustomizedSchedule():
     try:
         data = request.get_json()                                
-        scheduleIndex = int(data['scheduleIndex'])
 
-        class_list_ways = class_optimization.new_customized_class_list_ways.copy()
+        current_class_list = list(data['current_class_list'])
 
-        if scheduleIndex == len(class_list_ways):
-            scheduleIndex = 0
-        elif scheduleIndex < 0:
-            scheduleIndex = len(class_list_ways) - 1
-
-        current_class_list = class_list_ways[scheduleIndex]
         startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
         timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
         timeGap = format(timeGap, ".2f")
 
-        myScheduleResult = {'scheduleIndex': scheduleIndex, 'timeGap': timeGap, 'currentSchedule': current_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+        myScheduleResult = {'timeGap': timeGap, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
         return jsonify(myScheduleResult)
 
     except Exception as e:
