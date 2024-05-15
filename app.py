@@ -110,7 +110,7 @@ def loadCustomizedSchedule():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
 
 #  [{'MATH1240A06': ['11:30 am-12:20 pm', 'MWF']}, {'MATH1240B12': ['04:00 pm-04:50 pm', 'T']}, 
 # {'COMP1010A01': ['12:30 pm-01:20 pm', 'MWF']}]
