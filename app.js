@@ -12,7 +12,7 @@ $(document).ready(function() {
         $.ajax({
             url: 'https://aurorascheduler.online/schedule',
             type: 'POST',
-            contentType: 'application/json',
+            // contentType: 'application/json',
             // data: JSON.stringify({ courses }),      // key is courses
             data: { courses: courses, term : term },
 
