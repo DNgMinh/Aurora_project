@@ -17,9 +17,19 @@ def schedule():
         courses = entered_courses.split()
         courses_list = []
         for course in courses:
-            key = course[0:4]
-            value = course[4:8]
+            if len(course) == 8:
+                key = course[0:4]
+            elif len(course) == 7:
+                key = course[0:3]
+            value = course[-4:]
             courses_list.append({key : value})
+
+        if term[0:4].lower() == "fall":
+            term = term[-4:] + "90"
+        elif term[0:6].lower() == "winter":
+            term = term[-4:] + "10"
+        elif term[0:6].lower() == "summer":
+            term = term[-4:] + "50"
 
         # print(courses_list)
         ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
