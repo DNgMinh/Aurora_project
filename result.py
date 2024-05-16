@@ -4,9 +4,7 @@ import schedule_retrieve
 def calculate_result(term, courses_list):
     classes_list = schedule_retrieve.schedule_retrieve(term, courses_list)
     if isinstance(classes_list, str):
-        print("Here we are")
         error = classes_list
-        print(error)
         ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = "0"*7
 
     else: 
