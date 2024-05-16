@@ -2,6 +2,7 @@ $(document).ready(function() {
     $('#submit').click(function() {
         $('#loading').show();
         $('#error').text('');
+        $('#error2').text('');
         $("#scheduleInfo1").html('');
         $("#scheduleInfo2").html('');
         $("#ways").html("");
@@ -205,6 +206,7 @@ $(document).ready(function() {
 
     $('#done').click(function() {
         $('#loading2').show();
+        $("#error2").html("");
         var customizations_list = [];
         currentScheduleIndex2 = 0;
 
@@ -252,6 +254,12 @@ $(document).ready(function() {
             },
 
             error: function(error) {
+                $('#loading2').hide();                  
+                $('#error2').text('Error! PLease check again!');
+                $("#customizedWays").html("");
+                $("#smallestCustomizedTimeGap").html("");
+                $("#best_customized_class_list").html("");
+                $(".myCustomizedTable").empty();
                 console.error('Error:', error);   
             }
         })
