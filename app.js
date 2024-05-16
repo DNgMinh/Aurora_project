@@ -2,18 +2,15 @@ $(document).ready(function() {
     $('#submit').click(function() {
         currentScheduleIndex1 = 0;
         $('#loading').show();
-        // Get the input value
+        
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
         const termInput = $('#term');
         const term = termInput.val();
 
-        // Make an AJAX request to the backend
         $.ajax({
             url: 'https://aurorascheduler.online/schedule',
             type: 'POST',
-            // contentType: 'application/json',
-            // data: JSON.stringify({ courses }),      // key is courses
             data: { courses: courses, term : term },
 
             success: function(response) {
@@ -191,7 +188,7 @@ $(document).ready(function() {
         $("#scheduleInfo2").html('');
 
         $('.customization').each(function() {
-            // Get the input value
+            
             const weekDaySelect = $(this).find('.weekDay');
             const weekDay = weekDaySelect.val();
             const dayTimeSelect = $(this).find('.dayTime');
@@ -207,12 +204,12 @@ $(document).ready(function() {
         });
 
         console.log(customizations_list[0]);
-        // Make an AJAX request to the backend
+        
         $.ajax({
 	    url: 'https://aurorascheduler.online/customization',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
+            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),              
             // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
@@ -324,7 +321,7 @@ $(document).ready(function() {
     $('#removeCustomization').click(function() {
         const numCustomizations = $('.customization').length;
         if (numCustomizations > 1) {
-            $('.customization:last-child').remove();                // remove the last class if there is > 1 class
+            $('.customization:last-child').remove();               
         }
     });
 
