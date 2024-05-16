@@ -54,8 +54,14 @@ def modifyList(lst):
 # lst = [1, 2, 3]
 # lst = list(lst)
 # print(lst)
+<<<<<<< HEAD
 s = "ag afaddf"
 print(s[-3:])
+=======
+
+a, b, c = "ttt"
+print(a, b, c)
+>>>>>>> main
 
 # doubled_numbers = map(lambda x: x * 2, numbers)
 # print(doubled_numbers)
