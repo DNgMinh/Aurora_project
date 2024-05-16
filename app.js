@@ -13,6 +13,8 @@ $(document).ready(function() {
         $("#best_customized_class_list").html("");
         $(".newTable").empty();
         $(".myCustomizedTable").empty();
+        window.class_list_ways = [];
+        window.customized_class_list_ways = [];
         currentScheduleIndex1 = 0;
         // Get the input value
         const coursesInput = $('#courses');
@@ -26,7 +28,7 @@ $(document).ready(function() {
             data: { courses: courses, term : term },
 
             success: function(response) {
-                window.class_list_ways = response.class_list_ways;
+                class_list_ways = response.class_list_ways;
 
                 console.log('Backend response:', response.ways);
                 console.log('Backend response:', response.smallestTimeGap);
@@ -206,6 +208,7 @@ $(document).ready(function() {
         $("#error2").html("");
         var customizations_list = [];
         currentScheduleIndex2 = 0;
+        customized_class_list_ways = [];
 
         $("#scheduleInfo2").html('');
 
@@ -236,7 +239,7 @@ $(document).ready(function() {
 
             success: function(response) {
                 $('#loading2').hide();
-                window.customized_class_list_ways = response.customized_class_list_ways;
+                customized_class_list_ways = response.customized_class_list_ways;
                 // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
                 console.log("There are ", response.customizedWays)
                 const best_customized_class_list = response.best_customized_class_list;
