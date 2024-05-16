@@ -85,10 +85,6 @@ def schedule_retrieve(term, course_list):
         }
         s6 = requests.Session()
         response6 = s6.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
-        if response6.status_code == 200:
-            print("Request was successful")
-        else:
-            print("Request failed with status code:", response6.status_code)
         #print(response6.text)
         sessid = response6.cookies.get('SESSID')
         scheduleA = {} 
@@ -112,7 +108,6 @@ def schedule_retrieve(term, course_list):
             if len(scheduleB) != 0:
                 schedule_list.append(scheduleB)
         else:
-            print("no table")
             return subj+crse
     return schedule_list
 

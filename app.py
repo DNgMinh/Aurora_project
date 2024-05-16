@@ -33,14 +33,12 @@ def schedule():
 
         # print(courses_list)
         error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
-        print("Now here")
         if error == "none":
             print(printResult)
             myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
             return jsonify(myResult)
         else:
-            print("Now we here")
             return jsonify({'error_course': error}), 404
 
     except Exception as e:
