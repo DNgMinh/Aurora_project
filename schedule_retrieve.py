@@ -85,28 +85,35 @@ def schedule_retrieve(term, course_list):
         }
         s6 = requests.Session()
         response6 = s6.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
+        if response6.status_code == 200:
+            print("Request was successful")
+        else:
+            print("Request failed with status code:", response6.status_code)
         #print(response6.text)
         sessid = response6.cookies.get('SESSID')
         scheduleA = {} 
         scheduleB = {}
         soup = BeautifulSoup(response6.text, 'html.parser')
         table = soup.find(class_='datadisplaytable', recursive=True)
-        rows = table.find_all('tr')
-        for row in rows:
-            columns = row.find_all('td', recursive=False)
-            if len(columns) >= 10:
-                course = columns[2].text + columns[3].text + columns[4].text
-                day = columns[8].text
-                time = columns[9].text
-                if columns[4].text[0] == 'A':
-                    scheduleA[course] = [time, day]
-                elif columns[4].text[0] == 'B':
-                    scheduleB[course] = [time, day]
-
-        if len(scheduleA) != 0:
-            schedule_list.append(scheduleA)
-        if len(scheduleB) != 0:
-            schedule_list.append(scheduleB)
+        if table:
+            rows = table.find_all('tr')
+            for row in rows:
+                columns = row.find_all('td', recursive=False)
+                if len(columns) >= 10:
+                    course = columns[2].text + columns[3].text + columns[4].text
+                    day = columns[8].text
+                    time = columns[9].text
+                    if columns[4].text[0] == 'A':
+                        scheduleA[course] = [time, day]
+                    elif columns[4].text[0] == 'B':
+                        scheduleB[course] = [time, day]
+            if len(scheduleA) != 0:
+                schedule_list.append(scheduleA)
+            if len(scheduleB) != 0:
+                schedule_list.append(scheduleB)
+        else:
+            print("no table")
+            return subj+crse
     return schedule_list
 
 def login(id, pin):

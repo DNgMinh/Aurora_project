@@ -49,11 +49,14 @@ def doSmth():
 def modifyList(lst):
     lst[0] = 1
 
-doSmth()
+# doSmth()
 
-lst = [1, 2, 3]
-lst = list(lst)
-print(lst)
+# lst = [1, 2, 3]
+# lst = list(lst)
+# print(lst)
+
+a, b, c = "ttt"
+print(a, b, c)
 
 # doubled_numbers = map(lambda x: x * 2, numbers)
 # print(doubled_numbers)

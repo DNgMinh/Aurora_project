@@ -3,13 +3,19 @@ import schedule_retrieve
 
 def calculate_result(term, courses_list):
     classes_list = schedule_retrieve.schedule_retrieve(term, courses_list)
+    if isinstance(classes_list, str):
+        print("Here we are")
+        error = classes_list
+        print(error)
+        ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = "0"*7
 
-    ways, smallestTimeGap, best_class_list, startTime_list, endTime_list, class_list_ways = class_optimization.main(classes_list)
-    # print(startTime_list)
-    # print(endTime_list)
-    printResult = "There are: " + str(ways) + " ways.\n Smallest time gap is " + str(smallestTimeGap) + " \nwith schedule: \n" + str(best_class_list) 
+    else: 
+        error = "none"
+        ways, smallestTimeGap, best_class_list, startTime_list, endTime_list, class_list_ways = class_optimization.main(classes_list)
 
-    return ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways
+        printResult = "There are: " + str(ways) + " ways.\n Smallest time gap is " + str(smallestTimeGap) + " \nwith schedule: \n" + str(best_class_list) 
+
+    return error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways
 
 def calculate_customization(customized_class_list_ways, weekDay, dayTime, customTime):
     customized_class_list_ways, ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = class_optimization.customization(customized_class_list_ways, weekDay, dayTime, customTime)

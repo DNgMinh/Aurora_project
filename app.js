@@ -1,7 +1,18 @@
 $(document).ready(function() {
     $('#submit').click(function() {
-        currentScheduleIndex1 = 0;
         $('#loading').show();
+        $('#error').text('');
+        $("#scheduleInfo1").html('');
+        $("#scheduleInfo2").html('');
+        $("#ways").html("");
+        $("#smallestTimeGap").html("");
+        $("#best_class_list").html("");
+        $("#customizedWays").html("");
+        $("#smallestCustomizedTimeGap").html("");
+        $("#best_customized_class_list").html("");
+        $(".newTable").empty();
+        $(".myCustomizedTable").empty();
+        currentScheduleIndex1 = 0;
         // Get the input value
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
@@ -38,7 +49,16 @@ $(document).ready(function() {
             },
 
             error: function(error) {
-                console.error('Error:', error);
+                if (error.status == 404) {
+                    let error_course = error.responseJSON.error_course
+                    console.error('Error 404: Course not found: ', error_course);
+                    $('#loading').hide();
+                    $('#error').text(`No course ${error_course} can be found! Please check again!`);
+                } else {
+                    console.error('Error:', error);  
+                    $('#loading').hide();                  
+                    $('#error').text('Error! PLease check again!');
+                }
             }
         })
     })
