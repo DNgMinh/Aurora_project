@@ -23,9 +23,13 @@ def schedule():
         for course in courses:
             if len(course) == 8:
                 key = course[0:4]
+                value = course[-4:]
             elif len(course) == 7:
                 key = course[0:3]
-            value = course[-4:]
+                value = course[-4:]
+            else:
+                key = course[0:len(course) - 1]
+                value = course[-1:]
             courses_list.append({key : value})
 
         if term[0:4].lower() == "fall":
