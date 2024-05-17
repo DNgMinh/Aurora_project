@@ -2,7 +2,11 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import result
 import class_optimization
+import sys
 # from result import calculate_result
+
+sys.stderr.flush()
+sys.stdout.flush()
 
 app = Flask(__name__)
 CORS(app)
@@ -33,20 +37,16 @@ def schedule():
         elif term[0:6].lower() == "winter":
             term = term[-4:] + "10"
         elif term[0:6].lower() == "summer":
-            term = term[-4:] + "50"
+            term = term[-4:] + "50"         
 
         # print(courses_list)
         error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
         if error == "none":
-            print("--------------------------------------------------------------------------------")
-            print(term)
-            print(printResult)
-            print("--------------------------------------------------------------------------------")
+            print(printResult, flush=True)
             myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
             return jsonify(myResult)
         else:
-            print(error)
             return jsonify({'error_course': error}), 404
 
     except Exception as e:
