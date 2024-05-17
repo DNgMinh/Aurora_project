@@ -51,7 +51,7 @@ def schedule():
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
             return jsonify(myResult)
         else:
-            print(error, flush=True)
+            print("Error course:", error, flush=True)
             return jsonify({'error_course': error}), 404
 
     except Exception as e:
@@ -83,7 +83,9 @@ def customization():
         return jsonify(myCustomizationResult)
     
     except Exception as e:
+        print("--------------------------------------------------------------------------------")
         print(str(e), flush=True)
+        print("--------------------------------------------------------------------------------")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/loadSchedule', methods=['POST'])
