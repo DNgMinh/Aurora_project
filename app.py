@@ -21,6 +21,7 @@ def schedule():
         courses = entered_courses.split()
         courses_list = []
         for course in courses:
+            course = course.upper()
             if len(course) == 8:
                 key = course[0:4]
                 value = course[-4:]
@@ -42,15 +43,19 @@ def schedule():
         # print(courses_list)
         error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
         if error == "none":
+            print("--------------------------------------------------------------------------------")
+            print(term, flush=True)
             print(printResult, flush=True)
+            print("--------------------------------------------------------------------------------")
             myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
             return jsonify(myResult)
         else:
+            print(error, flush=True)
             return jsonify({'error_course': error}), 404
 
     except Exception as e:
-        print(str(e))
+        print(str(e), flush=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/customization', methods=['POST'])
@@ -78,7 +83,7 @@ def customization():
         return jsonify(myCustomizationResult)
     
     except Exception as e:
-        print(str(e))
+        print(str(e), flush=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/loadSchedule', methods=['POST'])
@@ -105,7 +110,7 @@ def loadSchedule():
         return jsonify(myScheduleResult)
 
     except Exception as e:
-        print(str(e))
+        print(str(e), flush=True)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/loadCustomizedSchedule', methods=['POST'])
@@ -123,7 +128,7 @@ def loadCustomizedSchedule():
         return jsonify(myScheduleResult)
 
     except Exception as e:
-        print(str(e))
+        print(str(e), flush=True)
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
