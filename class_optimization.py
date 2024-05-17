@@ -157,9 +157,9 @@ def main(classes_list):
     # customized_class_list_ways = class_list_ways.copy()
 
     smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(class_list_ways)
-
-    class_list_ways[best_class_list_index] = class_list_ways[0].copy()
-    class_list_ways[0] = best_class_list.copy()
+    if len(class_list_ways) > 0:
+        class_list_ways[best_class_list_index] = class_list_ways[0].copy()
+        class_list_ways[0] = best_class_list.copy()
     
     return (len(class_list_ways), "{:.2f}".format(smallestTimeGap), best_class_list, startTime_list, endTime_list, class_list_ways)
 
