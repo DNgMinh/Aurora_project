@@ -52,6 +52,7 @@ def schedule():
             return jsonify(myResult)
         else:
             print("--------------------------------------------------------------------------------")
+            print(term, flush=True)
             print("Error course:", error, flush=True)
             print("--------------------------------------------------------------------------------")
             return jsonify({'error_course': error}), 404
