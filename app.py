@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_caching import Cache
 import result
 import class_optimization
 import sys
@@ -9,6 +10,7 @@ sys.stderr.flush()
 sys.stdout.flush()
 
 app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
 CORS(app)
 
 @app.route('/schedule', methods=['POST'])
@@ -18,6 +20,15 @@ def schedule():
         # print(entered_courses)
         # get term
         term = str(request.form.get('term'))
+
+        # Create a cache key based on the input data
+        cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
+        
+        # Check if the result is already in the cache
+        cached_result = cache.get(cache_key)
+        if cached_result is not None:
+            return jsonify(cached_result)
+
         courses = entered_courses.split()
         courses_list = []
         for course in courses:
@@ -49,6 +60,8 @@ def schedule():
             print("--------------------------------------------------------------------------------")
             myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
+
+            cache.set(cache_key, myResult)
             return jsonify(myResult)
         else:
             print("--------------------------------------------------------------------------------")
