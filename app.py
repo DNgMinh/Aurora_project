@@ -20,16 +20,18 @@ CORS(app)
 def schedule():
     try:
         entered_courses = str(request.form.get('courses'))   # courses is key, we are getting its value
-        # print(entered_courses)
+        print(entered_courses)
         # get term
         term = str(request.form.get('term'))
 
-        # Create a cache key based on the input data
-        cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
+        #cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
+        sorted_courses = ' '.join(sorted(entered_courses.split()))
+        cache_key = f"schedule_{sorted_courses}_{term}"
         
         # Check if the result is already in the cache
         cached_result = cache.get(cache_key)
         if cached_result is not None:
+            print("-----------------------------")
             print("CACHED", flush=True)
             # cached_result = json.loads(cached_result.decode('utf-8'))
             print(cached_result['best_class_list'])
