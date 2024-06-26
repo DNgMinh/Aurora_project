@@ -10,7 +10,10 @@ sys.stderr.flush()
 sys.stdout.flush()
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
+cache = Cache(app, config={
+    'CACHE_TYPE': 'SimpleCache',
+    'CACHE_DEFAULT_TIMEOUT': 300  # Default timeout of 300 seconds
+})
 CORS(app)
 
 @app.route('/schedule', methods=['POST'])
@@ -27,6 +30,9 @@ def schedule():
         # Check if the result is already in the cache
         cached_result = cache.get(cache_key)
         if cached_result is not None:
+            print("CACHED", flush=True)
+            # cached_result = json.loads(cached_result.decode('utf-8'))
+            print(cached_result['class_list_ways'])
             return jsonify(cached_result)
 
         courses = entered_courses.split()
