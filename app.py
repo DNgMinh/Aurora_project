@@ -1,16 +1,26 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_caching import Cache
 import result
 import class_optimization
 import sys
+import redis
+import json
 # from result import calculate_result
 
 sys.stderr.flush()
 sys.stdout.flush()
 
 app = Flask(__name__)
-cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300})
+# cache = Cache(app, config={
+#     'CACHE_TYPE': 'redis',
+#     'CACHE_REDIS_HOST': 'localhost', # Replace with your server's IP address
+#     'CACHE_REDIS_PORT': 6379,          # The default Redis port
+#     'CACHE_REDIS_DB': 0,                # Database number (optional)
+#     #'CACHE_REDIS_PASSWORD': 'your-password', # If you've set a password
+#     'CACHE_REDIS_URL': 'redis://localhost:6379/0',
+#     'CACHE_DEFAULT_TIMEOUT': 300        # Cache expiration in seconds
+# })
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
 CORS(app)
 
 @app.route('/schedule', methods=['POST'])
@@ -25,8 +35,12 @@ def schedule():
         cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
         
         # Check if the result is already in the cache
-        cached_result = cache.get(cache_key)
+        cached_result = redis_client.get(cache_key)
         if cached_result is not None:
+            print("-----------------------------")
+            print("CACHED", flush=True)
+            cached_result = json.loads(cached_result.decode('utf-8'))
+            print(cached_result['class_list_ways'], flush=True)
             return jsonify(cached_result)
 
         courses = entered_courses.split()
@@ -61,7 +75,7 @@ def schedule():
             myResult = {'ways': ways, 'smallestTimeGap': smallestTimeGap, 'best_class_list': best_class_list, 'startTime_list': startTime_list, 'endTime_list': endTime_list, 'class_list_ways': class_list_ways}
             # Keys of dict can be of any immutable data type, such as integers, strings, tuples,
 
-            cache.set(cache_key, myResult)
+            redis_client.set(cache_key, json.dumps(myResult), ex=600)
             return jsonify(myResult)
         else:
             print("--------------------------------------------------------------------------------")
