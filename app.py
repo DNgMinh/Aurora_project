@@ -32,7 +32,7 @@ def schedule():
         if cached_result is not None:
             print("CACHED", flush=True)
             # cached_result = json.loads(cached_result.decode('utf-8'))
-            print(cached_result['class_list_ways'])
+            print(cached_result['best_class_list'])
             return jsonify(cached_result)
 
         courses = entered_courses.split()
