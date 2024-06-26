@@ -31,8 +31,9 @@ def schedule():
         # get term
         term = str(request.form.get('term'))
 
-        # Create a cache key based on the input data
-        cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
+        #cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
+        sorted_courses = ' '.join(sorted(entered_courses.split()))
+        cache_key = f"schedule_{sorted_courses}_{term}"
         
         # Check if the result is already in the cache
         cached_result = redis_client.get(cache_key)
