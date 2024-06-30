@@ -97,12 +97,13 @@ def schedule_retrieve(term, course_list):
                 columns = row.find_all('td', recursive=False)
                 if len(columns) >= 10:
                     course = columns[2].text + columns[3].text + columns[4].text
+                    crn = "CRN=" + columns[1].text
                     day = columns[8].text
                     time = columns[9].text
                     if columns[4].text[0] == 'A':
-                        scheduleA[course] = [time, day]
+                        scheduleA[course] = [time, day, crn]
                     elif columns[4].text[0] == 'B':
-                        scheduleB[course] = [time, day]
+                        scheduleB[course] = [time, day, crn]
             if len(scheduleA) != 0:
                 schedule_list.append(scheduleA)
             if len(scheduleB) != 0:
