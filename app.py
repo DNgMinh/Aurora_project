@@ -31,6 +31,16 @@ def schedule():
         # get term
         term = str(request.form.get('term'))
 
+        term = term.lower()
+        entered_courses = entered_courses.lower()
+
+        if term[0:4] == "fall":
+            term = term[-4:] + "90"
+        elif term[0:6] == "winter":
+            term = term[-4:] + "10"
+        elif term[0:6] == "summer":
+            term = term[-4:] + "50"      
+ 
         #cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
         sorted_courses = ' '.join(sorted(entered_courses.split()))
         cache_key = f"schedule_{sorted_courses}_{term}"
@@ -58,13 +68,6 @@ def schedule():
                 key = course[0:len(course) - 1]
                 value = course[-1:]
             courses_list.append({key : value})
-
-        if term[0:4].lower() == "fall":
-            term = term[-4:] + "90"
-        elif term[0:6].lower() == "winter":
-            term = term[-4:] + "10"
-        elif term[0:6].lower() == "summer":
-            term = term[-4:] + "50"         
 
         # print(courses_list)
         error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = result.calculate_result(term, courses_list)
