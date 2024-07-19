@@ -16,18 +16,15 @@ $(document).ready(function() {
         window.class_list_ways = [];
         window.customized_class_list_ways = [];
         currentScheduleIndex1 = 0;
-        // Get the input value
+
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
         const termInput = $('#term');
         const term = termInput.val();
 
-        // Make an AJAX request to the backend
         $.ajax({
-            url: 'http://127.0.0.1:5000/schedule',
+            url: 'https://aurorascheduler.online/schedule',
             type: 'POST',
-            // contentType: 'application/json',
-            // data: JSON.stringify({ courses }),      // key is courses
             data: { courses: courses, term : term },
 
             success: function(response) {
@@ -68,7 +65,6 @@ $(document).ready(function() {
 
     function drawScheduleTable(tableClassName, class_list, startTime_list, endTime_list) {
 
-        // return indexes of values of an array by ascending order
         function sortedIndexes(array) {
             const indexedArray = array.map((value, index) => ({ value:value, index:index }));
             indexedArray.sort((a, b) => a.value - b.value);
@@ -124,7 +120,7 @@ $(document).ready(function() {
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
-            const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
+            const className = Object.keys(_class)[0].slice(0, -3);                       
             const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
@@ -174,7 +170,7 @@ $(document).ready(function() {
         const current_class_list = class_list_ways[index];
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/loadSchedule',
+            url: 'https://aurorascheduler.online//loadSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),
@@ -216,7 +212,7 @@ $(document).ready(function() {
         $("#scheduleInfo2").html('');
 
         $('.customization').each(function() {
-            // Get the input value
+            
             const weekDaySelect = $(this).find('.weekDay');
             const weekDay = weekDaySelect.val();
             const dayTimeSelect = $(this).find('.dayTime');
@@ -232,12 +228,11 @@ $(document).ready(function() {
         });
 
         console.log(customizations_list[0]);
-        // Make an AJAX request to the backend
         $.ajax({
-	    url: 'http://127.0.0.1:5000/customization',
+	    url: 'https://aurorascheduler.online/customization',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
+            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               
             // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
@@ -283,7 +278,7 @@ $(document).ready(function() {
         const current_class_list = customized_class_list_ways[index];
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/loadCustomizedSchedule',
+            url: 'https://aurorascheduler.online/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),
@@ -316,7 +311,7 @@ $(document).ready(function() {
 
 
     $('#addCustomization').click(function () {
-        // let newCustomization = $('.customization').first().clone();
+    
         let newCustomization = 
         `
         <div class="customization">
@@ -355,17 +350,10 @@ $(document).ready(function() {
     $('#removeCustomization').click(function() {
         const numCustomizations = $('.customization').length;
         if (numCustomizations > 1) {
-            $('.customization:last-child').remove();                // remove the last class if there is > 1 class
+            $('.customization:last-child').remove();               
         }
     });
 
-    // $('.dayTime').change(function() {
-    //     if ($(this).val() === 'customize') {
-    //         $('.customTime').show();
-    //     } else {
-    //         $('.customTime').hide();
-    //     }
-    // });
     $(document).on('change', '.dayTime', function() {
         if ($(this).val() === 'customize') {
             $(this).closest('.customization').find('.customTime_div').show();
