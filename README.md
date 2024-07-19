@@ -19,3 +19,7 @@ This website is still under development with more features and improvements to c
 
 * [Duc Do](https://github.com/ducdonghiem) - dod2@myumanitoba.ca
 * [Minh Do](https://github.com/DNgMinh) - minh.do.nghiem@gmail.com
+
+### Donation
+
+Consider [donating](https://www.paypal.com/paypalme/DucDo371) to support us in maintaining this domain. Thank you!
