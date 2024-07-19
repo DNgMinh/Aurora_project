@@ -22,9 +22,12 @@ $(document).ready(function() {
         const termInput = $('#term');
         const term = termInput.val();
 
+        // Make an AJAX request to the backend
         $.ajax({
-            url: 'https://aurorascheduler.online/schedule',
+            url: 'http://127.0.0.1:5000/schedule',
             type: 'POST',
+            // contentType: 'application/json',
+            // data: JSON.stringify({ courses }),      // key is courses
             data: { courses: courses, term : term },
 
             success: function(response) {
@@ -122,7 +125,7 @@ $(document).ready(function() {
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
             const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
-            const classSection = Object.keys(_class)[0].slice(-3);
+            const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
@@ -171,7 +174,7 @@ $(document).ready(function() {
         const current_class_list = class_list_ways[index];
 
         $.ajax({
-            url: 'https://aurorascheduler.online/loadSchedule',
+            url: 'http://127.0.0.1:5000/loadSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),
@@ -213,7 +216,7 @@ $(document).ready(function() {
         $("#scheduleInfo2").html('');
 
         $('.customization').each(function() {
-            
+            // Get the input value
             const weekDaySelect = $(this).find('.weekDay');
             const weekDay = weekDaySelect.val();
             const dayTimeSelect = $(this).find('.dayTime');
@@ -229,12 +232,12 @@ $(document).ready(function() {
         });
 
         console.log(customizations_list[0]);
-        
+        // Make an AJAX request to the backend
         $.ajax({
-	    url: 'https://aurorascheduler.online/customization',
+	    url: 'http://127.0.0.1:5000/customization',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),              
+            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
             // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
             success: function(response) {
@@ -280,7 +283,7 @@ $(document).ready(function() {
         const current_class_list = customized_class_list_ways[index];
 
         $.ajax({
-            url: 'https://aurorascheduler.online/loadCustomizedSchedule',
+            url: 'http://127.0.0.1:5000/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),
@@ -352,7 +355,7 @@ $(document).ready(function() {
     $('#removeCustomization').click(function() {
         const numCustomizations = $('.customization').length;
         if (numCustomizations > 1) {
-            $('.customization:last-child').remove();               
+            $('.customization:last-child').remove();                // remove the last class if there is > 1 class
         }
     });
 
