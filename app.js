@@ -30,7 +30,7 @@ $(document).ready(function() {
 
             success: function(response) {
                 class_list_ways = response.class_list_ways;
-
+                weirdCourses = response.weirdCourses;
                 console.log('Backend response:', response.ways);
                 console.log('Backend response:', response.smallestTimeGap);
 
