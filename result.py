@@ -2,14 +2,14 @@ import class_optimization
 import schedule_retrieve
 
 def calculate_result(term, courses_list):
-    classes_list = schedule_retrieve.schedule_retrieve(term, courses_list)
+    classes_list, weirdCourses = schedule_retrieve.schedule_retrieve(term, courses_list)
     if isinstance(classes_list, str):
         error = classes_list
         ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways = "0"*7
 
     else: 
         error = "none"
-        ways, smallestTimeGap, best_class_list, startTime_list, endTime_list, class_list_ways = class_optimization.main(classes_list)
+        ways, smallestTimeGap, best_class_list, startTime_list, endTime_list, class_list_ways = class_optimization.main(classes_list, weirdCourses)
 
         printResult = "There are: " + str(ways) + " ways.\n Smallest time gap is " + str(smallestTimeGap) + " \nwith schedule: \n" + str(best_class_list) 
 

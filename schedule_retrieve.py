@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 
 def schedule_retrieve(term, course_list):
     schedule_list = []
+    weirdCourses = []
     # id = input("Enter id:")
     # pin = input("Enter pin:")
     id = "008005501"
@@ -89,6 +90,7 @@ def schedule_retrieve(term, course_list):
         sessid = response6.cookies.get('SESSID')
         scheduleA = {} 
         scheduleB = {}
+        scheduleC = {}
         soup = BeautifulSoup(response6.text, 'html.parser')
         table = soup.find(class_='datadisplaytable', recursive=True)
         if table:
@@ -96,6 +98,12 @@ def schedule_retrieve(term, course_list):
             for row in rows:
                 columns = row.find_all('td', recursive=False)
                 if len(columns) >= 10:
+                    if columns[2].text.isspace():
+                        day = columns[8].text
+                        time = columns[9].text
+                        scheduleC[course] = [time, day, crn]
+                        # weirdCourses.append(course)
+                        continue
                     course = columns[2].text + columns[3].text + columns[4].text
                     crn = "CRN=" + columns[1].text
                     day = columns[8].text
@@ -107,10 +115,14 @@ def schedule_retrieve(term, course_list):
             if len(scheduleA) != 0:
                 schedule_list.append(scheduleA)
             if len(scheduleB) != 0:
-                schedule_list.append(scheduleB)
+                schedule_list.append(scheduleB)  # separate A and B sections into different dicts to choose only one class from each  
+            if len(scheduleC) != 0:
+                weirdCourses.append(course[0:-3])
+                schedule_list.append(scheduleC)
         else:
             return subj+crse
-    return schedule_list
+    print(schedule_list)
+    return (schedule_list, weirdCourses)
 
 def login(id, pin):
     cookies = {
