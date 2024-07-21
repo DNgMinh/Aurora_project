@@ -142,7 +142,7 @@ def startEndTimeList(class_list):
     return startTime_list, endTime_list
 
 # return the smallest time gap as the best option
-def main(classes_list):
+def main(classes_list, weirdCourses):
     # global courses, n, class_list, class_list_ways # , customized_class_list_ways
     # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]
     # courses = classes_list          # is a list of dictionaries of courses, each course contains some classes
@@ -155,6 +155,25 @@ def main(classes_list):
     # print(class_list_ways[2])
     
     # customized_class_list_ways = class_list_ways.copy()
+
+    # remove invalid option if weird course
+    if len(weirdCourses) != 0:
+        for weirdCourse in weirdCourses:
+            for option in class_list_ways[:]:               # always create a copy of the list if modifying during iteration
+                section = ""
+                isFirst = True
+                remove = False
+                for i in range(len(option)):       
+                    for key, value in option[i].items():
+                        if isFirst and key[0:-3] == weirdCourse and key[-3:-2] != "B":
+                            section = key[-3:]
+                            isFirst = False
+                        if (not isFirst) and key[0:-3] == weirdCourse and key[-3:] != section and key[-3:-2] != "B":
+                            class_list_ways.remove(option)
+                            remove = True
+                            break
+                    if remove:
+                        break
 
     smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index = bestClassList(class_list_ways)
     if len(class_list_ways) > 0:
