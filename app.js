@@ -15,6 +15,7 @@ $(document).ready(function() {
         $(".myCustomizedTable").empty();
         window.class_list_ways = [];
         window.customized_class_list_ways = [];
+        window.weirdCourses = [];
         currentScheduleIndex1 = 0;
         // Get the input value
         const coursesInput = $('#courses');
@@ -32,7 +33,7 @@ $(document).ready(function() {
 
             success: function(response) {
                 class_list_ways = response.class_list_ways;
-
+                weirdCourses = response.weirdCourses;
                 console.log('Backend response:', response.ways);
                 console.log('Backend response:', response.smallestTimeGap);
 
@@ -119,6 +120,7 @@ $(document).ready(function() {
 
             $(`.${tableClassName}`).append(first_column);
         }
+        var weirdCoursesColor = {};
         for (let j = 0; j < startTime_list.length; j++) {
             let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
@@ -145,10 +147,25 @@ $(document).ready(function() {
                         let below_cell = below_row.querySelector(`.${days[i]}`);
                         below_cell.innerHTML = classTime;
                     }
-                    cell.classList.add(color_list[j]); 
+                    let color = color_list[j];
+                    for (let i = 0; i < weirdCourses.length; i++) {
+                        if (className == weirdCourses[i]) {
+                            if (className in weirdCoursesColor) {
+                                color = weirdCoursesColor[className]; 
+                                continue;
+                            }
+                            weirdCoursesColor[className] = color_list[j];
+                        }
+                    }
+                    cell.classList.add(color); 
                     if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
                     if (time == round_end_time - 0.25 && round_end_time !== endTime_list[j]) {
                         let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
+                        for (let i = 0; i < weirdCourses.length; i++) {
+                            if (className == weirdCourses[i]) {
+                                divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${weirdCoursesColor[className]};"></div>`; 
+                            }
+                        }
                         cell.style.position = "relative";
                         cell.innerHTML += divHTML;
                         cell.style.backgroundColor = "transparent";
