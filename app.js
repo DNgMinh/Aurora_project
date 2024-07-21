@@ -15,6 +15,7 @@ $(document).ready(function() {
         $(".myCustomizedTable").empty();
         window.class_list_ways = [];
         window.customized_class_list_ways = [];
+        window.weirdCourses = [];
         currentScheduleIndex1 = 0;
 
         const coursesInput = $('#courses');
@@ -115,12 +116,13 @@ $(document).ready(function() {
 
             $(`.${tableClassName}`).append(first_column);
         }
+        var weirdCoursesColor = {};
         for (let j = 0; j < startTime_list.length; j++) {
             let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
-            const className = Object.keys(_class)[0].slice(0, -3);                       
+            const className = Object.keys(_class)[0].slice(0, -3);                      
             const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
@@ -141,10 +143,25 @@ $(document).ready(function() {
                         let below_cell = below_row.querySelector(`.${days[i]}`);
                         below_cell.innerHTML = classTime;
                     }
-                    cell.classList.add(color_list[j]); 
+                    let color = color_list[j];
+                    for (let i = 0; i < weirdCourses.length; i++) {
+                        if (className == weirdCourses[i]) {
+                            if (className in weirdCoursesColor) {
+                                color = weirdCoursesColor[className]; 
+                                continue;
+                            }
+                            weirdCoursesColor[className] = color_list[j];
+                        }
+                    }
+                    cell.classList.add(color); 
                     if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
                     if (time == round_end_time - 0.25 && round_end_time !== endTime_list[j]) {
                         let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
+                        for (let i = 0; i < weirdCourses.length; i++) {
+                            if (className == weirdCourses[i]) {
+                                divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${weirdCoursesColor[className]};"></div>`; 
+                            }
+                        }
                         cell.style.position = "relative";
                         cell.innerHTML += divHTML;
                         cell.style.backgroundColor = "transparent";
