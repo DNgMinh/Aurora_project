@@ -86,7 +86,7 @@ def schedule_retrieve(term, course_list):
         }
         s6 = requests.Session()
         response6 = s6.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
-        #print(response6.text)
+        # print(response6.text + "----------------------")
         sessid = response6.cookies.get('SESSID')
         scheduleA = {} 
         scheduleB = {}
@@ -120,7 +120,7 @@ def schedule_retrieve(term, course_list):
                 weirdCourses.append(course[0:-3])
                 schedule_list.append(scheduleC)
         else:
-            return subj+crse
+            return (subj+crse, weirdCourses)
     print(schedule_list)
     return (schedule_list, weirdCourses)
 
