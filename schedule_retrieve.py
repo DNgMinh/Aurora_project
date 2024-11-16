@@ -1,13 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+import os
+
 
 def schedule_retrieve(term, course_list):
     schedule_list = []
     weirdCourses = []
-    # id = input("Enter id:")
-    # pin = input("Enter pin:")
-    id = "008005501"
-    pin = "Cei@072023"
+    load_dotenv()  # Load environment variables from .env file
+    id = os.getenv("ID")
+    pin = os.getenv("PIN")
+    print(id)
+    print(pin)
     sessid = login(id, pin)
     for course in course_list:
         subj, crse = list(course.items())[0]
@@ -92,6 +96,8 @@ def schedule_retrieve(term, course_list):
         scheduleB = {}
         scheduleC = {}
         soup = BeautifulSoup(response6.text, 'html.parser')
+        if soup.title.text == "Site maintenance":
+            return ("Maintenance", weirdCourses)
         table = soup.find(class_='datadisplaytable', recursive=True)
         if table:
             rows = table.find_all('tr')
@@ -101,17 +107,30 @@ def schedule_retrieve(term, course_list):
                     if columns[2].text.isspace():
                         day = columns[8].text
                         time = columns[9].text
-                        scheduleC[course] = [time, day, crn]
+                        scheduleC[course] = [time, day, crn, enrolled, wailist, instructor, location, status]
                         # weirdCourses.append(course)
                         continue
+                    # Find the <span> inside the <label>
+                    span = columns[0].find('label').find('span') if columns[0].find('label') else None
+                    if span and span.text == "add to worksheet":
+                        print("Found a column with the label 'add to worksheet'.")
+                        status = "Open"
+                    elif columns[0].find('abbr', title='Closed'):
+                        status = "Closed"
+                    elif columns[0].find('abbr', title= 'Not available for registration'):
+                        status = "Not available for registration"
                     course = columns[2].text + columns[3].text + columns[4].text
+                    enrolled = columns[11].text + "/" + columns[10].text
+                    wailist =  columns[13].text + "/" + columns[12].text
+                    instructor = columns[15].text
+                    location = columns[17].text
                     crn = "CRN=" + columns[1].text
                     day = columns[8].text
                     time = columns[9].text
                     if columns[4].text[0] == 'A':
-                        scheduleA[course] = [time, day, crn]
+                        scheduleA[course] = [time, day, crn, enrolled, wailist, instructor, location, status]
                     elif columns[4].text[0] == 'B':
-                        scheduleB[course] = [time, day, crn]
+                        scheduleB[course] = [time, day, crn, enrolled, wailist, instructor, location, status]
             if len(scheduleA) != 0:
                 schedule_list.append(scheduleA)
             if len(scheduleB) != 0:
