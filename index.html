@@ -20,13 +20,13 @@
         <form id="courseForm">
             <div>
                 <label for="term">Enter term:</label>
-                <input type="text" id="term" name="term" required>
-                e.g., Winter2024, Fall2024
+                <input type="text" id="term" name="term" required placeholder="e.g., Winter2024, Fall2024">
+                <!-- e.g., Winter2024, Fall2024 -->
             </div>
             <div>
                 <label for="courses">Enter courses (space-separated):</label>
-                <input type="text" id="courses" name="courses" required>
-                e.g., COMP1010 MATH1240 STAT2150 ENG1450
+                <input type="text" id="courses" name="courses" required placeholder="e.g., COMP1010 MATH1240 STAT2150 ENG1450">
+                <!-- e.g., COMP1010 MATH1240 STAT2150 ENG1450 -->
             </div>
             <div>
                 <button type="button", id ="submit">Submit</button>
@@ -39,7 +39,7 @@
 
     <div id="ways"></div>
     <div id="smallestTimeGap"></div>
-    <div id="best_class_list"></div>
+    <!-- <div id="best_class_list"></div> -->
 
     <h2>Schedule Table</h2>
 
@@ -60,22 +60,29 @@
         </tbody>
     </table>
 
-    <div>
-        <button id="prevSchedule1">&lt;</button>
-        <button id="nextSchedule1">&gt;</button>
-        Navigating between schedule options
+    <div class="navigatingButtons">
+        <div>
+            <button id="return1">Return</button>
+        </div>
+        <!-- <button id="return1">Return</button> -->
+        <div class="buttonsNextPrev">
+            <button id="prevSchedule1">&lt;</button>
+            <button id="nextSchedule1">&gt;</button>
+            <!-- Navigating between schedule options -->
+        </div>
     </div>
-    <br>
-    <div>
+    <!-- <br> -->
+    <!-- <div>
         <button id="return1">Return</button>
         Return to the first (best) option
-    </div>
+    </div> -->
 
-    <h2>Schedule customization</h2>
+    <!-- <h2>Schedule customization</h2> -->
+    <h3>Customization</h3>
 
     <div class="form2">
         <form id="customizationForm">
-            <div class="customization">
+            <!-- <div class="customization">
                 <div>
                     <label for="weekDay">Select day that you want to customize time:</label>
                     <select name="weekDay" class="weekDay">
@@ -103,7 +110,7 @@
                     e.g., 11:00 am-03:00 pm
                 </div>
                 <br>
-            </div>
+            </div> -->
         </form>
 
         <div>
@@ -114,24 +121,24 @@
         </div>
         <br>
         <div>
-            <button type="button", id ="done">Done</button>
+            <button type="button", id ="done">Customized</button>
         </div>
-        <div id="loading2" style="display:none">Loading...</div>
-        <div id="error2"></div>
+        <!-- <div id="loading2" style="display:none">Loading...</div>
+        <div id="error2"></div> -->
     </div>
 
-    <div id="customizedWays"></div>
+    <!-- <div id="customizedWays"></div>
     <div id="smallestCustomizedTimeGap"></div>
-    <div id="best_customized_class_list"></div>
+    <div id="best_customized_class_list"></div> -->
 
-    <h3>Customized Schedule Table</h3>
+    <!-- <h3>Customized Schedule Table</h3>
 
     <div id="scheduleInfo2"></div>
 
     <table>
         <thead>
             <tr>
-                <th></th> <!-- Empty cell for spacing -->
+                <th></th>  Empty cell for spacing 
                 <th>Monday</th>
                 <th>Tuesday</th>
                 <th>Wednesday</th>
@@ -152,7 +159,7 @@
     <div>
         <button id="return2">Return</button>
         Return to the first (best) option
-    </div>
+    </div> -->
 
 </body>
 </html>
