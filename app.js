@@ -98,12 +98,14 @@ $(document).ready(function() {
                     if (error_course == "Maintenance") {
                         console.error(error_course);
                         $('#loading').hide();
-                        $('#error').text("The aurora site is under maintenance!");
+                        $('#error').text("The aurora site is under maintenance! Please try again later!");
+                    }
+                    else {
+                        console.error('Error 404: Course not found: ', error_course);
+                        $('#loading').hide();
+                        $('#error').text(`No course ${error_course} can be found! Please check again!`);
                     }
                     
-                    console.error('Error 404: Course not found: ', error_course);
-                    $('#loading').hide();
-                    $('#error').text(`No course ${error_course} can be found! Please check again!`);
                 } else {
                     console.error('Error:', error);  
                     $('#loading').hide();                  
