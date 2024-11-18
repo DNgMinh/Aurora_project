@@ -16,7 +16,7 @@ $(document).ready(function() {
 
 
     $('#submit').click(function() {
-        $('#loading').show();
+        $('#loading1').show();
         $('#error').text('');
         // $('#error2').text('');
         $("#scheduleInfo1").html('');
@@ -80,7 +80,7 @@ $(document).ready(function() {
                 WAYS = response.ways;
                 SMALLEST_TIME_GAP = response.smallestTimeGap;
 
-                $('#loading').hide();
+                $('#loading1').hide();
                 $("#scheduleInfo1").html('');
 
                 $("#ways").html("There are: " + WAYS + " ways.");
@@ -97,18 +97,18 @@ $(document).ready(function() {
                     let error_course = error.responseJSON.error_course;
                     if (error_course == "Maintenance") {
                         console.error(error_course);
-                        $('#loading').hide();
+                        $('#loading1').hide();
                         $('#error').text("The aurora site is under maintenance! Please try again later!");
                     }
                     else {
                         console.error('Error 404: Course not found: ', error_course);
-                        $('#loading').hide();
+                        $('#loading1').hide();
                         $('#error').text(`No course ${error_course} can be found! Please check again!`);
                     }
                     
                 } else {
                     console.error('Error:', error);  
-                    $('#loading').hide();                  
+                    $('#loading1').hide();                  
                     $('#error').text('Error! PLease check again!');
                 }
             }
@@ -313,6 +313,7 @@ $(document).ready(function() {
             $('#loading1').show();
             $("#scheduleInfo1").html('');
             $("#error1").html("");
+            $('#loading2').show();
 
             customized_class_list_ways = [];
             // Make an AJAX request to the backend
@@ -324,6 +325,7 @@ $(document).ready(function() {
                     // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
         
                     success: function(response) {
+                        $('#loading1').hide();
                         $('#loading2').hide();
                         customized_class_list_ways = response.customized_class_list_ways;
                         // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
@@ -358,7 +360,8 @@ $(document).ready(function() {
                         // $("#smallestCustomizedTimeGap").html("");
                         // $("#best_customized_class_list").html("");
                         // $(".myCustomizedTable").empty();
-                        $('#loading1').hide();                  
+                        $('#loading1').hide();    
+                        $('#loading2').hide();              
                         $('#error1').text('Error! PLease check again!');
                         $("#ways").html("");
                         $("#smallestTimeGap").html("");
