@@ -176,7 +176,7 @@ $(document).ready(function() {
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
             const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
-            const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];
+            const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];  // section / crn
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
