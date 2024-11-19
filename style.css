@@ -201,3 +201,12 @@ button:hover {
     background-color: #0056b3;
 }
 
+.popup {
+    position: absolute;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 200px;
+}
+

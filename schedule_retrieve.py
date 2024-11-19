@@ -88,14 +88,14 @@ def schedule_retrieve(term, course_list):
             'path': '1',
             'SUB_BTN': 'View Sections',
         }
-        s6 = requests.Session()
-        response6 = s6.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
-        # print(response6.text + "----------------------")
-        sessid = response6.cookies.get('SESSID')
+
+        s = requests.Session()
+        response = s.post('https://aurora.umanitoba.ca/ssb/bwskfcls.P_GetCrse', cookies=cookies, headers=headers, data=data)
+        sessid = response.cookies.get('SESSID')
         scheduleA = {} 
         scheduleB = {}
         scheduleC = {}
-        soup = BeautifulSoup(response6.text, 'html.parser')
+        soup = BeautifulSoup(response.text, 'html.parser')
         if soup.title.text == "Site maintenance":
             return ("Maintenance", weirdCourses)
         table = soup.find(class_='datadisplaytable', recursive=True)
@@ -107,8 +107,7 @@ def schedule_retrieve(term, course_list):
                     if columns[2].text.isspace():
                         day = columns[8].text
                         time = columns[9].text
-                        scheduleC[course] = [time, day, crn, enrolled, wailist, instructor, location, status]
-                        # weirdCourses.append(course)
+                        scheduleC[course] = [time, day, crn, enrolled, wailist, instructor, location, status]  # the second time slot of course with two time slots, ex: ENG1450
                         continue
                     # Find the <span> inside the <label>
                     span = columns[0].find('label').find('span') if columns[0].find('label') else None
@@ -119,11 +118,13 @@ def schedule_retrieve(term, course_list):
                         status = "Closed"
                     elif columns[0].find('abbr', title= 'Not available for registration'):
                         status = "Not available for registration"
+                    else:
+                        status = "Check it yourself"
                     course = columns[2].text + columns[3].text + columns[4].text
                     enrolled = columns[11].text + "/" + columns[10].text
-                    wailist =  columns[13].text + "/" + columns[12].text
-                    instructor = columns[15].text
-                    location = columns[17].text
+                    wailist =  columns[14].text + "/" + columns[13].text
+                    instructor = columns[16].text
+                    location = columns[18 ].text
                     crn = "CRN=" + columns[1].text
                     day = columns[8].text
                     time = columns[9].text
@@ -139,9 +140,9 @@ def schedule_retrieve(term, course_list):
                 weirdCourses.append(course[0:-3])
                 schedule_list.append(scheduleC)
         else:
-            return (subj+crse, weirdCourses)
+            return (subj+crse, weirdCourses)  # return error course, weirdCourse is empty
     print(schedule_list)
-    return (schedule_list, weirdCourses)
+    return (schedule_list, weirdCourses)  # schedule_list is a list of dictionaries
 
 def login(id, pin):
     cookies = {
@@ -186,4 +187,4 @@ def login(id, pin):
     return sessid
     
 # list = schedule_retrieve('202410', [{'COMP' : '1020'}, {'MATH' : '1240'}])
-# print(list)
+# print(list) 

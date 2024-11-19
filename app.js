@@ -2,14 +2,19 @@ $(document).ready(function() {
 
     // keyboard commands
     $(document).keydown(function(event) {
+        const isFormElementFocused = $(document.activeElement).is('input, textarea, select');
+        // const isFormElementFocused = false;
+
         if (event.key === 'Enter') {  
             event.preventDefault();  
             $('#submit').click();  
         }
-        if (event.key === 'ArrowRight') {
+        if (event.key === 'ArrowRight' && !isFormElementFocused) {
+            event.preventDefault(); 
             $('#nextSchedule1').click();
         }
-        if (event.key === 'ArrowLeft') {
+        if (event.key === 'ArrowLeft' && !isFormElementFocused) {
+            event.preventDefault(); 
             $('#prevSchedule1').click();
         }
     });
@@ -176,7 +181,7 @@ $(document).ready(function() {
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
             const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
-            const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];  // section / crn
+            const classSection = Object.keys(_class)[0].slice(-3);
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
@@ -207,6 +212,8 @@ $(document).ready(function() {
                         }
                     }
                     cell.classList.add(color); 
+                    cell.setAttribute('class-index', j)
+                    cell.classList.add('isACourse')
                     if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
                     if (time == round_end_time - 0.25 && round_end_time !== endTime_list[j]) {
                         let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
@@ -278,6 +285,63 @@ $(document).ready(function() {
         currentScheduleIndex2 = 0;
         loadCustomizedSchedule(currentScheduleIndex2);
     })
+
+
+
+    $('table').on('click', '.isACourse', function (event) {
+        console.log('Element clicked!', event);
+        let index = event.target.getAttribute('class-index');
+        // console.log(customized_class_list_ways[currentScheduleIndex2])
+        // let index = 0
+        // if (key[key.length-3] == 'A') {
+        //     index = 0
+        // } else if (key[key.length-3] == 'B') {
+        //     index = 1
+        // } else {
+        //     index = 2
+        // }
+        let this_class_dict = customized_class_list_ways[currentScheduleIndex2][index] // dict contain one class
+        let this_class = this_class_dict[Object.keys(this_class_dict)[0]]
+        console.log(this_class)
+        // Check if a popup already exists
+        if ($('.popup').length != 0) {
+            $('.popup').remove();
+        }
+        if ($('.popup').length === 0) {
+            // Create the popup dynamically
+            const popup = $(`
+                <div class="popup">
+                    <p>${this_class[2]}</p>
+                    <p>Enrolled: ${this_class[3]}</p>
+                    <p>Waitlist: ${this_class[4]}</p>
+                    <p>Instructor: ${this_class[5]}</p>
+                    <p>Location: ${this_class[6]}</p>
+                    <p>Status: ${this_class[7]}</p>
+                </div>
+            `);   
+            $('body').append(popup);
+
+            // Position the popup near the target
+            const offset = $(this).offset();
+            popup.css({
+                top: offset.top + $(this).outerHeight(),
+                left: offset.left,
+            });
+        }
+
+        // Stop propagation to prevent immediate hiding
+        event.stopPropagation();
+    });
+
+    // Hide the popup when clicking anywhere else
+    $(document).on('click', function () {
+        $('.popup').remove(); // Remove the popup
+    });
+
+    // Prevent hiding when clicking inside the popup
+    $(document).on('click', '.popup', function (event) {
+        event.stopPropagation();
+    });
 
 
     $('#done').click(function() {
