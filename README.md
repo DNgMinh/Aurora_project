@@ -10,16 +10,16 @@ This website is still under development with more features and improvements to c
 
 ### Usage
 
-* Enter the term and courses then click `Submit`.
-* Using navigation buttons to browse through different schedule options.
-* Select a time period (days and times) when classes should not be scheduled, then click `Done`.
-* Using navigation buttons to view other customized options.
+* Enter the term and courses then click `Submit` (or press `Enter`).
+* Select a time period (days and times) when classes should not be scheduled, then click `Customized`.
+* Use the navigation buttons to browse through different schedule options (or press `←` and `→`).
+* Click on a class in the table to view more information about it.
 
 ### Contributors
 
 * [Duc Do](https://github.com/ducdonghiem) - dod2@myumanitoba.ca
 * [Minh Do](https://github.com/DNgMinh) - minh.do.nghiem@gmail.com
 
-### Donation
+<!-- ### Donation
 
-Consider [donating](https://www.paypal.com/paypalme/DucDo371) to support us in maintaining this domain. Thank you!
+Consider [donating](https://www.paypal.com/paypalme/DucDo371) to support us in maintaining this domain. Thank you! -->

@@ -210,3 +210,13 @@ button:hover {
     max-width: 200px;
 }
 
+.isACourse {
+    cursor: pointer;
+}
+
+.customeTime_container {
+    display: flex;
+    gap: 10px;
+    align-items: center; /* Vertically align items */
+    flex-wrap: wrap; /* Ensure wrapping if the screen is too small */
+}
