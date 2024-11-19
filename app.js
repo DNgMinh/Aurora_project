@@ -1,71 +1,140 @@
 $(document).ready(function() {
+
+    // keyboard commands
+    $(document).keydown(function(event) {
+        const isFormElementFocused = $(document.activeElement).is('input, textarea, select');
+        // const isFormElementFocused = false;
+
+        if (event.key === 'Enter') {  
+            event.preventDefault();  
+            $('#submit').click();  
+        }
+        if (event.key === 'ArrowRight' && !isFormElementFocused) {
+            event.preventDefault(); 
+            $('#nextSchedule1').click();
+        }
+        if (event.key === 'ArrowLeft' && !isFormElementFocused) {
+            event.preventDefault(); 
+            $('#prevSchedule1').click();
+        }
+    });
+
+
     $('#submit').click(function() {
-        $('#loading').show();
+        $('#loading1').show();
         $('#error').text('');
-        $('#error2').text('');
+        // $('#error2').text('');
         $("#scheduleInfo1").html('');
-        $("#scheduleInfo2").html('');
+        // $("#scheduleInfo2").html('');
         $("#ways").html("");
         $("#smallestTimeGap").html("");
         $("#best_class_list").html("");
         $("#customizedWays").html("");
-        $("#smallestCustomizedTimeGap").html("");
-        $("#best_customized_class_list").html("");
+        // $("#smallestCustomizedTimeGap").html("");
+        // $("#best_customized_class_list").html("");
         $(".newTable").empty();
-        $(".myCustomizedTable").empty();
-        window.class_list_ways = [];
-        window.customized_class_list_ways = [];
-        window.weirdCourses = [];
-        currentScheduleIndex1 = 0;
+        // $(".myCustomizedTable").empty();
 
+        // class list options without customization
+        window.class_list_ways = [];
+        // class list options with customization
+        window.customized_class_list_ways = [];
+        // for courses with weird schedule (e.g., ENG1440)
+        window.weirdCourses = [];
+
+        // for the best option without customization
+        window.BEST_CLASS_LIST;
+        window.START_TIME_LIST;
+        window.END_TIME_LIST;
+        window.WAYS;
+        window.SMALLEST_TIME_GAP;
+
+        // currentScheduleIndex1 = 0;
+        currentScheduleIndex2 = 0;
+        // Get the input value
         const coursesInput = $('#courses');
         const courses = coursesInput.val();
         const termInput = $('#term');
         const term = termInput.val();
 
+        // Make an AJAX request to the backend
         $.ajax({
             url: 'https://aurorascheduler.online/schedule',
             type: 'POST',
+            // contentType: 'application/json',
+            // data: JSON.stringify({ courses }),      // key is courses
             data: { courses: courses, term : term },
 
             success: function(response) {
                 class_list_ways = response.class_list_ways;
+                customized_class_list_ways = response.class_list_ways;
                 weirdCourses = response.weirdCourses;
                 console.log('Backend response:', response.ways);
                 console.log('Backend response:', response.smallestTimeGap);
 
-                const best_class_list = response.best_class_list;
-                console.log('Backend response:', best_class_list);
+                // const best_class_list = response.best_class_list;
+                BEST_CLASS_LIST = response.best_class_list;
+                // console.log('Backend response:', best_class_list);
+                console.log('Backend response:', BEST_CLASS_LIST);
 
-                const best_class_list_str = JSON.stringify(best_class_list)
+                // const best_class_list_str = JSON.stringify(best_class_list);
+                // const best_class_list_str = JSON.stringify(BEST_CLASS_LIST);
 
-                $('#loading').hide();
+                START_TIME_LIST = response.startTime_list;
+                END_TIME_LIST = response.endTime_list;
+                WAYS = response.ways;
+                SMALLEST_TIME_GAP = response.smallestTimeGap;
+
+                $('#loading1').hide();
                 $("#scheduleInfo1").html('');
 
-                $("#ways").html("There are: " + response.ways + " ways.");
-                $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestTimeGap + " hours per week.");
-                $("#best_class_list").html("With this schedule: " + best_class_list_str);
+                if (WAYS == 0) {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                }
+                else {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
+                    // $("#best_class_list").html("With this schedule: " + best_class_list_str);
 
-                drawScheduleTable("newTable", best_class_list, response.startTime_list, response.endTime_list)
+                    $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week");
+                }
+
+                drawScheduleTable("newTable", BEST_CLASS_LIST, START_TIME_LIST, END_TIME_LIST);
             },
 
             error: function(error) {
+                BEST_CLASS_LIST = [];
+                START_TIME_LIST = [];
+                END_TIME_LIST = [];
+                WAYS = -1;
+                SMALLEST_TIME_GAP = -1;
+
                 if (error.status == 404) {
-                    let error_course = error.responseJSON.error_course
-                    console.error('Error 404: Course not found: ', error_course);
-                    $('#loading').hide();
-                    $('#error').text(`No course ${error_course} can be found! Please check again!`);
+                    let error_course = error.responseJSON.error_course;
+                    if (error_course == "Maintenance") {
+                        console.error(error_course);
+                        $('#loading1').hide();
+                        $('#error').text("The aurora site is under maintenance! Please try again later!");
+                    }
+                    else {
+                        console.error('Error 404: Course not found: ', error_course);
+                        $('#loading1').hide();
+                        $('#error').text(`No course ${error_course} can be found! Please check again!`);
+                    }
+                    
                 } else {
                     console.error('Error:', error);  
-                    $('#loading').hide();                  
+                    $('#loading1').hide();                  
                     $('#error').text('Error! PLease check again!');
                 }
             }
         })
     })
 
+    // draw the schedule table
     function drawScheduleTable(tableClassName, class_list, startTime_list, endTime_list) {
 
+        // return indexes of values of an array by ascending order
         function sortedIndexes(array) {
             const indexedArray = array.map((value, index) => ({ value:value, index:index }));
             indexedArray.sort((a, b) => a.value - b.value);
@@ -122,8 +191,8 @@ $(document).ready(function() {
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
             let round_end_time = endTime_list[j] % 0.25 !==0 ? endTime_list[j] - (endTime_list[j] % 0.25) + 0.25 : endTime_list[j];
             const _class = class_list[j];
-            const className = Object.keys(_class)[0].slice(0, -3);                      
-            const classSection = Object.keys(_class)[0].slice(-3) + " / " + _class[Object.keys(_class)[0]][2];
+            const className = Object.keys(_class)[0].slice(0, -3);                       // this object only has one key
+            const classSection = Object.keys(_class)[0].slice(-3);
             const classTime = _class[Object.keys(_class)[0]][0];                    
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
@@ -154,6 +223,8 @@ $(document).ready(function() {
                         }
                     }
                     cell.classList.add(color); 
+                    cell.setAttribute('class-index', j)
+                    cell.classList.add('isACourse')
                     if (time < round_end_time - 0.25) {cell.style.borderBottom= "none";}
                     if (time == round_end_time - 0.25 && round_end_time !== endTime_list[j]) {
                         let divHTML = `<div style="position: absolute; top: 0; left: 0; width: 100%; height: 33.33%; background-color: ${color_list[j]};"></div>`;
@@ -172,64 +243,130 @@ $(document).ready(function() {
         }
     }
     
-    var currentScheduleIndex1 = 0;
+    // the current option index 
+    // var currentScheduleIndex1 = 0;
 
-    function loadSchedule(index) {
+    // this function is no longer needed
+    // function loadSchedule(index) {
 
-        if (index == class_list_ways.length) {
-            index = 0;
-        }
-        else if (index < 0) {
-            index = class_list_ways.length - 1;
-        }        
+    //     if (index == class_list_ways.length) {
+    //         index = 0;
+    //     }
+    //     else if (index < 0) {
+    //         index = class_list_ways.length - 1;
+    //     }        
 
-        currentScheduleIndex1 = index;
-        const current_class_list = class_list_ways[index];
+    //     currentScheduleIndex1 = index;
+    //     const current_class_list = class_list_ways[index];
 
-        $.ajax({
-            url: 'https://aurorascheduler.online//loadSchedule',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ current_class_list: current_class_list }),
+    //     $.ajax({
+    //         url: 'http://127.0.0.1:5000/loadSchedule',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify({ current_class_list: current_class_list }),
 
-            success: function(response) {
-                $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex1+1) + " with the time gap = " + response.timeGap + " hrs/week");
-                drawScheduleTable("newTable", current_class_list, response.startTime_list, response.endTime_list);
-            },
+    //         success: function(response) {
+    //             $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex1+1) + " with the time gap = " + response.timeGap + " hrs/week");
+    //             drawScheduleTable("newTable", current_class_list, response.startTime_list, response.endTime_list);
+    //         },
 
-            error: function(error) {
-                console.error('Error:', error);
-            }
-        });
-    }
+    //         error: function(error) {
+    //             console.error('Error:', error);
+    //         }
+    //     });
+    // }
 
     $('#nextSchedule1').click(function() {
-        currentScheduleIndex1++;
-        loadSchedule(currentScheduleIndex1);
+        // currentScheduleIndex1++;
+        // loadSchedule(currentScheduleIndex1);
+        currentScheduleIndex2++;
+        loadCustomizedSchedule(currentScheduleIndex2);
     })
 
     $('#prevSchedule1').click(function() {
-        currentScheduleIndex1--;
-        loadSchedule(currentScheduleIndex1);
+        // currentScheduleIndex1--;
+        // loadSchedule(currentScheduleIndex1);
+        currentScheduleIndex2--;
+        loadCustomizedSchedule(currentScheduleIndex2);
     })
 
     $('#return1').click(function() {
-        currentScheduleIndex1 = 0;
-        loadSchedule(currentScheduleIndex1);
+        // currentScheduleIndex1 = 0;
+        // loadSchedule(currentScheduleIndex1);
+        currentScheduleIndex2 = 0;
+        loadCustomizedSchedule(currentScheduleIndex2);
     })
 
 
+
+    $('table').on('click', '.isACourse', function (event) {
+        console.log('Element clicked!', event);
+        let index = event.target.getAttribute('class-index');
+        // console.log(customized_class_list_ways[currentScheduleIndex2])
+        // let index = 0
+        // if (key[key.length-3] == 'A') {
+        //     index = 0
+        // } else if (key[key.length-3] == 'B') {
+        //     index = 1
+        // } else {
+        //     index = 2
+        // }
+        let this_class_dict = customized_class_list_ways[currentScheduleIndex2][index] // dict contain one class
+        let this_class = this_class_dict[Object.keys(this_class_dict)[0]]
+        console.log(this_class)
+        // Check if a popup already exists
+        if ($('.popup').length != 0) {
+            $('.popup').remove();
+        }
+        if ($('.popup').length === 0) {
+            // Create the popup dynamically
+            const popup = $(`
+                <div class="popup">
+                    <p>${this_class[2]}</p>
+                    <p>Enrolled: ${this_class[3]}</p>
+                    <p>Waitlist: ${this_class[4]}</p>
+                    <p>Instructor: ${this_class[5]}</p>
+                    <p>Location: ${this_class[6]}</p>
+                    <p>Status: ${this_class[7]}</p>
+                </div>
+            `);   
+            $('body').append(popup);
+
+            // Position the popup near the target
+            const offset = $(this).offset();
+            popup.css({
+                top: offset.top + $(this).outerHeight(),
+                left: offset.left,
+            });
+        }
+
+        // Stop propagation to prevent immediate hiding
+        event.stopPropagation();
+    });
+
+    // Hide the popup when clicking anywhere else
+    $(document).on('click', function () {
+        $('.popup').remove(); // Remove the popup
+    });
+
+    // Prevent hiding when clicking inside the popup
+    $(document).on('click', '.popup', function (event) {
+        event.stopPropagation();
+    });
+
+
     $('#done').click(function() {
-        $('#loading2').show();
-        $("#error2").html("");
+        // $('#loading2').show();
+        // $("#error2").html("");
         var customizations_list = [];
         currentScheduleIndex2 = 0;
-        customized_class_list_ways = [];
+        // customized_class_list_ways = [];
+        // const weekDay = -1;     // impossible value
 
-        $("#scheduleInfo2").html('');
+        // $("#scheduleInfo2").html('');
 
         $('.customization').each(function() {
-            
+            // Get the input value
             const weekDaySelect = $(this).find('.weekDay');
             const weekDay = weekDaySelect.val();
             const dayTimeSelect = $(this).find('.dayTime');
@@ -245,43 +382,103 @@ $(document).ready(function() {
         });
 
         console.log(customizations_list[0]);
-        $.ajax({
-	    url: 'https://aurorascheduler.online/customization',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               
-            // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
 
-            success: function(response) {
-                $('#loading2').hide();
-                customized_class_list_ways = response.customized_class_list_ways;
-                // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
-                console.log("There are ", response.customizedWays)
-                const best_customized_class_list = response.best_customized_class_list;
-                console.log('Backend customized response:', best_customized_class_list);
-                const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
+        // send customization info to backend if there is 
+        if (customizations_list.length > 0) {
+            $('#loading1').show();
+            $("#scheduleInfo1").html('');
+            $("#error").html("");
+            $('#loading2').show();
 
-                $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
-                $("#smallestCustomizedTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
-                $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
+            customized_class_list_ways = [];
+            // Make an AJAX request to the backend
+            $.ajax({
+                url: 'https://aurorascheduler.online/customization',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
+                    // data: { weekDay: weekDay, dayTime : dayTime , customTime : customTime},
+        
+                    success: function(response) {
+                        $('#loading1').hide();
+                        $('#loading2').hide();
+                        customized_class_list_ways = response.customized_class_list_ways;
+                        // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
+        
+                        // if (response.customizedWays != -1) {
+                        console.log("There are ", response.customizedWays)
+                        const best_customized_class_list = response.best_customized_class_list;
+                        console.log('Backend customized response:', best_customized_class_list);
+                        // const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
 
-                drawScheduleTable("myCustomizedTable", best_customized_class_list, response.startTime_list, response.endTime_list)
-            },
-
-            error: function(error) {
-                $('#loading2').hide();                  
-                $('#error2').text('Error! PLease check again!');
-                $("#customizedWays").html("");
-                $("#smallestCustomizedTimeGap").html("");
-                $("#best_customized_class_list").html("");
-                $(".myCustomizedTable").empty();
-                console.error('Error:', error);   
-            }
-        })
+                        if (response.customizedWays == 0) {
+                            $("#ways").html("There are: " + response.customizedWays + " customized ways.");
+                            $("#smallestTimeGap").html("");
+                        }
+    
+                        // $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
+                        // $("#smallestCustomizedTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
+                        // $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
+                        else {
+                            $("#ways").html("There are: " + response.customizedWays + " customized ways.");
+                            $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
+                            // $("#best_class_list").html("With this schedule: " + best_customized_class_list_str);
+        
+                            $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.smallestCustomizedTimeGap + " hrs/week");
+                        }
+                        
+    
+                        drawScheduleTable("newTable", best_customized_class_list, response.startTime_list, response.endTime_list);
+                        // }
+        
+                        // else {
+                        //     loadCustomizedSchedule(currentScheduleIndex2);
+                        // }
+                    },
+        
+                    error: function(error) {
+                        // $('#loading2').hide();                  
+                        // $('#error2').text('Error! PLease check again!');
+                        // $("#customizedWays").html("");
+                        // $("#smallestCustomizedTimeGap").html("");
+                        // $("#best_customized_class_list").html("");
+                        // $(".myCustomizedTable").empty();
+                        $('#loading1').hide();    
+                        $('#loading2').hide();              
+                        $('#error').text('Error! PLease check again!');
+                        $("#ways").html("");
+                        $("#smallestTimeGap").html("");
+                        $("#best_class_list").html("");
+                        $(".newTable").empty();
+                        console.error('Error:', error);   
+                    }
+                })
+        }
+        // return to the first option if there is no customized info
+        else {
+            // if submit is not error
+            if (WAYS != -1) {
+                $("#error").html("");
+                customized_class_list_ways = class_list_ways;
+                if (WAYS == 0) {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("");
+                    $("#scheduleInfo1").html("");
+                }
+                else {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
+                    $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week"); 
+                } 
+                drawScheduleTable("newTable", BEST_CLASS_LIST, START_TIME_LIST, END_TIME_LIST);
+            }      
+        }
     })
 
+    // the current option index
     var currentScheduleIndex2 = 0;
 
+    // navigating between option
     function loadCustomizedSchedule(index) {
 
         if (index == customized_class_list_ways.length) {
@@ -294,6 +491,7 @@ $(document).ready(function() {
         currentScheduleIndex2 = index;
         const current_class_list = customized_class_list_ways[index];
 
+        // send request to backend to obtain data for making table
         $.ajax({
             url: 'https://aurorascheduler.online/loadCustomizedSchedule',
             type: 'POST',
@@ -301,8 +499,9 @@ $(document).ready(function() {
             data: JSON.stringify({ current_class_list: current_class_list }),
 
             success: function(response) {       
-                $("#scheduleInfo2").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.timeGap + " hrs/week");
-                drawScheduleTable("myCustomizedTable", current_class_list, response.startTime_list, response.endTime_list);
+                // $("#scheduleInfo2").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.timeGap + " hrs/week");
+                $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.timeGap + " hrs/week");
+                drawScheduleTable("newTable", current_class_list, response.startTime_list, response.endTime_list);
             },
 
             error: function(error) {
@@ -311,24 +510,24 @@ $(document).ready(function() {
         });
     }
 
-    $('#nextSchedule2').click(function() {
-        currentScheduleIndex2++;
-        loadCustomizedSchedule(currentScheduleIndex2);
-    })
+    // $('#nextSchedule2').click(function() {
+    //     currentScheduleIndex2++;
+    //     loadCustomizedSchedule(currentScheduleIndex2);
+    // })
 
-    $('#prevSchedule2').click(function() {
-        currentScheduleIndex2--;
-        loadCustomizedSchedule(currentScheduleIndex2);
-    })
+    // $('#prevSchedule2').click(function() {
+    //     currentScheduleIndex2--;
+    //     loadCustomizedSchedule(currentScheduleIndex2);
+    // })
 
-    $('#return2').click(function() {
-        currentScheduleIndex2 = 0;
-        loadCustomizedSchedule(currentScheduleIndex2);
-    })
+    // $('#return2').click(function() {
+    //     currentScheduleIndex2 = 0;
+    //     loadCustomizedSchedule(currentScheduleIndex2);
+    // })
 
 
     $('#addCustomization').click(function () {
-    
+        // let newCustomization = $('.customization').first().clone();
         let newCustomization = 
         `
         <div class="customization">
@@ -342,7 +541,7 @@ $(document).ready(function() {
                         <option value="F">Friday</option>
                     </select>
                 </div>
-                <div>
+                <div class="customeTime_container">
                     <label for="dayTime">Select time that you do not want to have class:</label>
                     <select name="dayTime" class="dayTime">
                         <option value="customize">Customize</option>
@@ -352,10 +551,10 @@ $(document).ready(function() {
                         <option value="afternoon">Afternoon (01:00 pm-17:00 pm)</option>
                         <option value="evening">Evening (17:00 pm-22:00 pm)</option>           
                     </select>
-                </div>
-                <div class="customTime_div">
-                    <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
-                    <input type="text" name="customTime" class="customTime">
+                    <div class="customTime_div">
+                        <label for="customTime">Enter time: (format: '08:00 am-11:00 am'):</label>
+                        <input type="text" name="customTime" class="customTime" placeholder="e.g., 11:00 am-03:00 pm">
+                    </div>
                 </div>
                 <br>
             </div>
@@ -366,10 +565,18 @@ $(document).ready(function() {
 
     $('#removeCustomization').click(function() {
         const numCustomizations = $('.customization').length;
-        if (numCustomizations > 1) {
-            $('.customization:last-child').remove();               
+        if (numCustomizations > 0) {
+            $('.customization:last-child').remove();                // remove the last class if there is > 0 class
         }
     });
+
+    // $('.dayTime').change(function() {
+    //     if ($(this).val() === 'customize') {
+    //         $('.customTime').show();
+    //     } else {
+    //         $('.customTime').hide();
+    //     }
+    // });
 
     $(document).on('change', '.dayTime', function() {
         if ($(this).val() === 'customize') {

@@ -2,6 +2,9 @@ import class_optimization
 import schedule_retrieve
 
 def calculate_result(term, courses_list):
+    # classes_list is a list of dictionaries whose keys are a list:
+    # [{"MATH1240A01": [time, day, crn, enrolled, wailist, instructor, location, status], "MATH1240A02": [...], ... }, {"MATH1240B01": [...], ...}, {"ENG1440C01": [...]}, ...]
+    # weirdCourses = ["ENG1440", ...]
     classes_list, weirdCourses = schedule_retrieve.schedule_retrieve(term, courses_list)
     if isinstance(classes_list, str):
         error = classes_list

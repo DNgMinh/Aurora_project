@@ -64,7 +64,7 @@ def checkEligibility(value, k, class_list):
             temp_value = list(class_list[i].values())               # class_list is a list of dictonaries of current classes
             for day in value[1]:                                    # value[1] is days of current execution ("MWF")
                 if day in temp_value[0][1]:                         # python is just dumb to make dict.values() an object
-                    if checkOverlap(value[0], temp_value[0][0]):    # so temp_value[0] is like ['11:30 am-12:20 pm', 'MWF']
+                    if checkOverlap(value[0], temp_value[0][0]):    # so temp_value[0] is like ['11:30 am-12:20 pm', 'MWF', ...]
                         return 0             
     return 1
 
@@ -130,7 +130,7 @@ def bestClassList(ways):
     startTime_list, endTime_list = startEndTimeList(best_class_list)                # will be used in frontend
     return smallestTimeGap, best_class_list, startTime_list, endTime_list, best_class_list_index
 
-# return startTime_list and endTime_list of an option
+# return startTime_list and endTime_list of an option for drawing the table of that option
 def startEndTimeList(class_list): 
     startTime_list = []                     # will be used in frontend
     endTime_list = []
@@ -141,7 +141,7 @@ def startEndTimeList(class_list):
             endTime_list.append(endTime)
     return startTime_list, endTime_list
 
-# return the smallest time gap as the best option
+# return all possible options, the smallest time gap as the best option
 def main(classes_list, weirdCourses):
     # global courses, n, class_list, class_list_ways # , customized_class_list_ways
     # courses = [course1A, course1B, course2A, course3A, course3B, course4A, course4B, course5A, course5B]

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+# from flask_caching import Cache
 import result
 import class_optimization
 import sys
@@ -30,7 +31,6 @@ def schedule():
         # print(entered_courses)
         # get term
         term = str(request.form.get('term'))
-
         term = term.lower()
         entered_courses = entered_courses.lower()
 
@@ -39,8 +39,8 @@ def schedule():
         elif term[0:6] == "winter":
             term = term[-4:] + "10"
         elif term[0:6] == "summer":
-            term = term[-4:] + "50"      
- 
+            term = term[-4:] + "50"  
+
         #cache_key = f"schedule_{hash(frozenset(entered_courses))}_{hash(frozenset(term))}"
         sorted_courses = ' '.join(sorted(entered_courses.split()))
         cache_key = f"schedule_{sorted_courses}_{term}"
@@ -67,7 +67,7 @@ def schedule():
             else:
                 key = course[0:len(course) - 1]
                 value = course[-1:]
-            courses_list.append({key : value})
+            courses_list.append({key : value})      
 
         # print(courses_list)
         error, ways, smallestTimeGap, best_class_list, printResult, startTime_list, endTime_list, class_list_ways, weirdCourses = result.calculate_result(term, courses_list)
@@ -102,10 +102,16 @@ def customization():
         # customized_class_list_ways = class_optimization.class_list_ways.copy()      # have to use this list at the first iteration
         customized_class_list_ways = list(data['class_list_ways']).copy()
 
+        # impossible values
+        # ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = -1, -1, -1, -1, -1
+
         for customization in customizations_list:
             weekDay = customization["weekDay"]                   # "M" 
             dayTime = customization["dayTime"]                   # "morning"
             customTime = customization["customTime"]             # '12:30 pm-01:20 pm'
+            # print(weekDay)
+            # print(dayTime)
+            # print(customTime)
             customized_class_list_ways, ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(customized_class_list_ways, weekDay, dayTime, customTime)
 
         # ways, smallestTimeGap, best_class_list, startTime_list, endTime_list = result.calculate_customization(weekDay, dayTime, customTime)
@@ -120,32 +126,33 @@ def customization():
         print(str(e), flush=True)
         return jsonify({'error': str(e)}), 500
 
-@app.route('/loadSchedule', methods=['POST'])
-def loadSchedule():
-    try:
-        data = request.get_json()                                
-        # scheduleIndex = int(data['scheduleIndex'])
+# this function is no longer needed
+# @app.route('/loadSchedule', methods=['POST'])
+# def loadSchedule():
+#     try:
+#         data = request.get_json()                                
+#         # scheduleIndex = int(data['scheduleIndex'])
 
-        current_class_list = list(data['current_class_list'])
+#         current_class_list = list(data['current_class_list'])
 
-        # class_list_ways = class_optimization.class_list_ways.copy()
+#         # class_list_ways = class_optimization.class_list_ways.copy()
 
-        # if scheduleIndex == len(class_list_ways):
-        #     scheduleIndex = 0
-        # elif scheduleIndex < 0:
-        #     scheduleIndex = len(class_list_ways) - 1
+#         # if scheduleIndex == len(class_list_ways):
+#         #     scheduleIndex = 0
+#         # elif scheduleIndex < 0:
+#         #     scheduleIndex = len(class_list_ways) - 1
 
-        # current_class_list = class_list_ways[scheduleIndex]
-        startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
-        timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
-        timeGap = format(timeGap, ".2f")
+#         # current_class_list = class_list_ways[scheduleIndex]
+#         startTime_list, endTime_list = class_optimization.startEndTimeList(current_class_list)
+#         timeGap = class_optimization.timeGapCalculation(current_class_list)[0]
+#         timeGap = format(timeGap, ".2f")
 
-        myScheduleResult = {'timeGap': timeGap, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
-        return jsonify(myScheduleResult)
+#         myScheduleResult = {'timeGap': timeGap, 'startTime_list': startTime_list, 'endTime_list': endTime_list}
+#         return jsonify(myScheduleResult)
 
-    except Exception as e:
-        print(str(e), flush=True)
-        return jsonify({'error': str(e)}), 500
+#     except Exception as e:
+#         print(str(e), flush=True)
+#         return jsonify({'error': str(e)}), 500
 
 @app.route('/loadCustomizedSchedule', methods=['POST'])
 def loadCustomizedSchedule():

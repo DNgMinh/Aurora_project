@@ -4,3 +4,4 @@ Flask-Cors
 requests
 flask_caching
 redis
+python-dotenv
