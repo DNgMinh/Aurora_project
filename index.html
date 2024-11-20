@@ -11,9 +11,9 @@
     </style>
 </head>
 <body>
-
-    <h1>Aurora Scheduler</h1>
-    <a href="README.html" target="_blank">README</a>
+    <h1 style="display: inline;">Aurora Scheduler</h1>
+    <a href="README.html" target="_blank" style="display: inline;">README</a>
+    <br><br><br>
     <!-- <button onclick="window.open('README.md')">View README</button> -->
 
     <div class="form">
@@ -70,7 +70,19 @@
             <button id="nextSchedule1">&gt;</button>
             <!-- Navigating between schedule options -->
         </div>
+        <div>
+            <button id="retrieveCRNs">Retrieve CRNs</button>
+        </div>
     </div>
+
+    <div id="popupCRNs" class="popup-overlay">
+        <div class="popup-content">
+            <h2>CRNs list of this schedule:</h2>
+            <div id="CRNsList"></div>
+            <button id="okPopup">OK</button>
+        </div>
+    </div>
+
     <!-- <br> -->
     <!-- <div>
         <button id="return1">Return</button>

@@ -41,6 +41,7 @@ $(document).ready(function() {
         window.customized_class_list_ways = [];
         // for courses with weird schedule (e.g., ENG1440)
         window.weirdCourses = [];
+        window.CRNsList = [];
 
         // for the best option without customization
         window.BEST_CLASS_LIST;
@@ -175,6 +176,7 @@ $(document).ready(function() {
             $(`.${tableClassName}`).append(first_column);
         }
         var weirdCoursesColor = {};
+        CRNsList = []
         for (let j = 0; j < startTime_list.length; j++) {
             let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
@@ -186,6 +188,16 @@ $(document).ready(function() {
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
             let time = round_start_time;
+            let isExistedCRN = false;
+            for (let i = 0; i < CRNsList.length; i++) {
+                if (CRNsList[i] == _class[Object.keys(_class)[0]][2]) {
+                    isExistedCRN = true;
+                    break;
+                }
+            }
+            if (!isExistedCRN) {
+                CRNsList.push(_class[Object.keys(_class)[0]][2]) 
+            }
             while (time < round_end_time) {
                 let time_string = time.toString();
                 let row = table.querySelector(`[value="${time_string}"]`);
@@ -286,6 +298,20 @@ $(document).ready(function() {
         loadCustomizedSchedule(currentScheduleIndex2);
     })
 
+    $('#retrieveCRNs').click(function() {
+        $('.popup-overlay').css('display', 'flex');  // Show the popup
+        for (let i = 0; i < CRNsList.length; i++) {
+            let newLine = $(`<p>${CRNsList[i].slice(4)}</p>`);   
+            // Append the new line to the popup
+            $('#CRNsList').append(newLine);    
+            console.log(CRNsList[i]);   
+        }
+    })
+
+    $('#okPopup').click(function() {
+        $('.popup-overlay').css('display', 'none');  // Hide the popup
+        $('#CRNsList').empty(); 
+    });
 
 
     $('table').on('click', '.isACourse', function (event) {
