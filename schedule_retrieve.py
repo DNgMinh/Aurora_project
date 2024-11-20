@@ -109,10 +109,14 @@ def schedule_retrieve(term, course_list):
                         time = columns[9].text
                         scheduleC[course] = [time, day, crn, enrolled, wailist, instructor, location, status]  # the second time slot of course with two time slots, ex: ENG1450
                         continue
+                    time = columns[9].text
+                    day = columns[8].text
+                    if time == "TBA" or day == "TBA":     
+                        # return (subj + crse + " has no specific time (TBA)!", weirdCourses)    
+                        continue    
                     # Find the <span> inside the <label>
                     span = columns[0].find('label').find('span') if columns[0].find('label') else None
                     if span and span.text == "add to worksheet":
-                        print("Found a column with the label 'add to worksheet'.")
                         status = "Open"
                     elif columns[0].find('abbr', title='Closed'):
                         status = "Closed"
@@ -126,8 +130,6 @@ def schedule_retrieve(term, course_list):
                     instructor = columns[16].text
                     location = columns[18 ].text
                     crn = "CRN=" + columns[1].text
-                    day = columns[8].text
-                    time = columns[9].text
                     if columns[4].text[0] == 'A':
                         scheduleA[course] = [time, day, crn, enrolled, wailist, instructor, location, status]
                     elif columns[4].text[0] == 'B':

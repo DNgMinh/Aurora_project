@@ -41,6 +41,7 @@ $(document).ready(function() {
         window.customized_class_list_ways = [];
         // for courses with weird schedule (e.g., ENG1440)
         window.weirdCourses = [];
+        window.CRNsList = [];
 
         // for the best option without customization
         window.BEST_CLASS_LIST;
@@ -116,6 +117,10 @@ $(document).ready(function() {
                         $('#loading1').hide();
                         $('#error').text("The aurora site is under maintenance! Please try again later!");
                     }
+                    // else if (error_course.includes("has no specific time (TBA)!") ) {
+                    //     $('#loading1').hide();
+                    //     $('#error').text(error_course);
+                    // }
                     else {
                         console.error('Error 404: Course not found: ', error_course);
                         $('#loading1').hide();
@@ -186,6 +191,7 @@ $(document).ready(function() {
             $(`.${tableClassName}`).append(first_column);
         }
         var weirdCoursesColor = {};
+        CRNsList = []
         for (let j = 0; j < startTime_list.length; j++) {
             let color_list = ["goldenrod","slateblue","firebrick","limegreen","mediumorchid","darksalmon","cornflowerblue","darkkhaki","darkslategray","darkgoldenrod"];
             let round_start_time = startTime_list[j] % 0.25 !== 0 ? startTime_list[j] - (startTime_list[j] % 0.25) : startTime_list[j];
@@ -197,6 +203,16 @@ $(document).ready(function() {
             const days = _class[Object.keys(_class)[0]][1];
             let table = document.getElementsByClassName(`${tableClassName}`)[0];
             let time = round_start_time;
+            let isExistedCRN = false;
+            for (let i = 0; i < CRNsList.length; i++) {
+                if (CRNsList[i] == _class[Object.keys(_class)[0]][2]) {
+                    isExistedCRN = true;
+                    break;
+                }
+            }
+            if (!isExistedCRN) {
+                CRNsList.push(_class[Object.keys(_class)[0]][2]) 
+            }
             while (time < round_end_time) {
                 let time_string = time.toString();
                 let row = table.querySelector(`[value="${time_string}"]`);
@@ -296,6 +312,77 @@ $(document).ready(function() {
         currentScheduleIndex2 = 0;
         loadCustomizedSchedule(currentScheduleIndex2);
     })
+
+    $('#retrieveCRNs').click(function() {
+        $('.popup-overlay').css('display', 'flex');  // Show the popup
+        for (let i = 0; i < CRNsList.length; i++) {
+            let newLine = $(`<p>${CRNsList[i].slice(4)}</p>`);   
+            // Append the new line to the popup
+            $('#CRNsList').append(newLine);    
+            console.log(CRNsList[i]);   
+        }
+    })
+
+    $('#okPopup').click(function() {
+        $('.popup-overlay').css('display', 'none');  // Hide the popup
+        $('#CRNsList').empty(); 
+    });
+
+
+    $('table').on('click', '.isACourse', function (event) {
+        console.log('Element clicked!', event);
+        let index = event.target.getAttribute('class-index');
+        // console.log(customized_class_list_ways[currentScheduleIndex2])
+        // let index = 0
+        // if (key[key.length-3] == 'A') {
+        //     index = 0
+        // } else if (key[key.length-3] == 'B') {
+        //     index = 1
+        // } else {
+        //     index = 2
+        // }
+        let this_class_dict = customized_class_list_ways[currentScheduleIndex2][index] // dict contain one class
+        let this_class = this_class_dict[Object.keys(this_class_dict)[0]]
+        console.log(this_class)
+        // Check if a popup already exists
+        if ($('.popup').length != 0) {
+            $('.popup').remove();
+        }
+        if ($('.popup').length === 0) {
+            // Create the popup dynamically
+            const popup = $(`
+                <div class="popup">
+                    <p>${this_class[2]}</p>
+                    <p>Enrolled: ${this_class[3]}</p>
+                    <p>Waitlist: ${this_class[4]}</p>
+                    <p>Instructor: ${this_class[5]}</p>
+                    <p>Location: ${this_class[6]}</p>
+                    <p>Status: ${this_class[7]}</p>
+                </div>
+            `);   
+            $('body').append(popup);
+
+            // Position the popup near the target
+            const offset = $(this).offset();
+            popup.css({
+                top: offset.top + $(this).outerHeight(),
+                left: offset.left,
+            });
+        }
+
+        // Stop propagation to prevent immediate hiding
+        event.stopPropagation();
+    });
+
+    // Hide the popup when clicking anywhere else
+    $(document).on('click', function () {
+        $('.popup').remove(); // Remove the popup
+    });
+
+    // Prevent hiding when clicking inside the popup
+    $(document).on('click', '.popup', function (event) {
+        event.stopPropagation();
+    });
 
 
 

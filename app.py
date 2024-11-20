@@ -28,7 +28,7 @@ CORS(app)
 def schedule():
     try:
         entered_courses = str(request.form.get('courses'))   # courses is key, we are getting its value
-        # print(entered_courses)
+        print(entered_courses)
         # get term
         term = str(request.form.get('term'))
         term = term.lower()
