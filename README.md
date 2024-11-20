@@ -14,11 +14,16 @@ This website is still under development with more features and improvements to c
 * Select a time period (days and times) when classes should not be scheduled, then click `Customized`.
 * Use the navigation buttons to browse through different schedule options (or press `←` and `→`).
 * Click on a class in the table to view more information about it.
+* Click the `Retrieve CRNs` button to view the schedule's CRN list for easy registration.
 
 ### Contributors
 
 * [Duc Do](https://github.com/ducdonghiem) - dod2@myumanitoba.ca
 * [Minh Do](https://github.com/DNgMinh) - minh.do.nghiem@gmail.com
+
+### Repo
+
+[Public repository](https://github.com/ducdonghiem/AuroraProject_Showcase) for this website.
 
 <!-- ### Donation
 
