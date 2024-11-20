@@ -89,16 +89,27 @@ $(document).ready(function() {
                 $('#loading1').hide();
                 $("#scheduleInfo1").html('');
 
-                $("#ways").html("There are: " + WAYS + " ways.");
-                $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
-                // $("#best_class_list").html("With this schedule: " + best_class_list_str);
+                if (WAYS == 0) {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                }
+                else {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
+                    // $("#best_class_list").html("With this schedule: " + best_class_list_str);
 
-                $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week");
+                    $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week");
+                }
 
                 drawScheduleTable("newTable", BEST_CLASS_LIST, START_TIME_LIST, END_TIME_LIST);
             },
 
             error: function(error) {
+                BEST_CLASS_LIST = [];
+                START_TIME_LIST = [];
+                END_TIME_LIST = [];
+                WAYS = -1;
+                SMALLEST_TIME_GAP = -1;
+
                 if (error.status == 404) {
                     let error_course = error.responseJSON.error_course;
                     if (error_course == "Maintenance") {
@@ -402,7 +413,7 @@ $(document).ready(function() {
         if (customizations_list.length > 0) {
             $('#loading1').show();
             $("#scheduleInfo1").html('');
-            $("#error1").html("");
+            $("#error").html("");
             $('#loading2').show();
 
             customized_class_list_ways = [];
@@ -421,21 +432,29 @@ $(document).ready(function() {
                         // {'customizedWays': ways, 'smallestCustomizedTimeGap': smallestTimeGap,'best_customized_class_list': best_class_list}
         
                         // if (response.customizedWays != -1) {
-                            console.log("There are ", response.customizedWays)
-                            const best_customized_class_list = response.best_customized_class_list;
-                            console.log('Backend customized response:', best_customized_class_list);
-                            // const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
-        
-                            // $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
-                            // $("#smallestCustomizedTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
-                            // $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
+                        console.log("There are ", response.customizedWays)
+                        const best_customized_class_list = response.best_customized_class_list;
+                        console.log('Backend customized response:', best_customized_class_list);
+                        // const best_customized_class_list_str = JSON.stringify(best_customized_class_list);
+
+                        if (response.customizedWays == 0) {
+                            $("#ways").html("There are: " + response.customizedWays + " customized ways.");
+                            $("#smallestTimeGap").html("");
+                        }
+    
+                        // $("#customizedWays").html("There are: " + response.customizedWays + " customized ways.");
+                        // $("#smallestCustomizedTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
+                        // $("#best_customized_class_list").html("With this schedule: " + best_customized_class_list_str);
+                        else {
                             $("#ways").html("There are: " + response.customizedWays + " customized ways.");
                             $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + response.smallestCustomizedTimeGap + " hours per week.");
                             // $("#best_class_list").html("With this schedule: " + best_customized_class_list_str);
         
                             $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + response.smallestCustomizedTimeGap + " hrs/week");
-        
-                            drawScheduleTable("newTable", best_customized_class_list, response.startTime_list, response.endTime_list);
+                        }
+                        
+    
+                        drawScheduleTable("newTable", best_customized_class_list, response.startTime_list, response.endTime_list);
                         // }
         
                         // else {
@@ -452,7 +471,7 @@ $(document).ready(function() {
                         // $(".myCustomizedTable").empty();
                         $('#loading1').hide();    
                         $('#loading2').hide();              
-                        $('#error1').text('Error! PLease check again!');
+                        $('#error').text('Error! PLease check again!');
                         $("#ways").html("");
                         $("#smallestTimeGap").html("");
                         $("#best_class_list").html("");
@@ -463,11 +482,22 @@ $(document).ready(function() {
         }
         // return to the first option if there is no customized info
         else {
-            customized_class_list_ways = class_list_ways;
-            $("#ways").html("There are: " + WAYS + " ways.");
-            $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
-            $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week");        
-            drawScheduleTable("newTable", BEST_CLASS_LIST, START_TIME_LIST, END_TIME_LIST);
+            // if submit is not error
+            if (WAYS != -1) {
+                $("#error").html("");
+                customized_class_list_ways = class_list_ways;
+                if (WAYS == 0) {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("");
+                    $("#scheduleInfo1").html("");
+                }
+                else {
+                    $("#ways").html("There are: " + WAYS + " ways.");
+                    $("#smallestTimeGap").html("The best option (fewest class days and minimal time gaps between classes) has the time gap of: " + SMALLEST_TIME_GAP + " hours per week.");
+                    $("#scheduleInfo1").html("Schedule number " + (currentScheduleIndex2+1) + " with the time gap = " + SMALLEST_TIME_GAP + " hrs/week"); 
+                } 
+                drawScheduleTable("newTable", BEST_CLASS_LIST, START_TIME_LIST, END_TIME_LIST);
+            }      
         }
     })
 
@@ -537,7 +567,7 @@ $(document).ready(function() {
                         <option value="F">Friday</option>
                     </select>
                 </div>
-                <div>
+                <div class="customeTime_container">
                     <label for="dayTime">Select time that you do not want to have class:</label>
                     <select name="dayTime" class="dayTime">
                         <option value="customize">Customize</option>
@@ -547,10 +577,10 @@ $(document).ready(function() {
                         <option value="afternoon">Afternoon (01:00 pm-17:00 pm)</option>
                         <option value="evening">Evening (17:00 pm-22:00 pm)</option>           
                     </select>
-                </div>
-                <div class="customTime_div">
-                    <label for="customTime">Enter time that you do not want to have class (format: '08:00 am-11:00 am'):</label>
-                    <input type="text" name="customTime" class="customTime" placeholder="e.g., 08:00 am - 11:00 am">
+                    <div class="customTime_div">
+                        <label for="customTime">Enter time: (format: '08:00 am-11:00 am'):</label>
+                        <input type="text" name="customTime" class="customTime" placeholder="e.g., 11:00 am-03:00 pm">
+                    </div>
                 </div>
                 <br>
             </div>
