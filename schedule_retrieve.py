@@ -111,8 +111,9 @@ def schedule_retrieve(term, course_list):
                         continue
                     time = columns[9].text
                     day = columns[8].text
-                    if time == "TBA" or day == "TBA":
-                        continue
+                    if time == "TBA" or day == "TBA":     
+                        # return (subj + crse + " has no specific time (TBA)!", weirdCourses)    
+                        continue    
                     # Find the <span> inside the <label>
                     span = columns[0].find('label').find('span') if columns[0].find('label') else None
                     if span and span.text == "add to worksheet":

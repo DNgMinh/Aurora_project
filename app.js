@@ -117,6 +117,10 @@ $(document).ready(function() {
                         $('#loading1').hide();
                         $('#error').text("The aurora site is under maintenance! Please try again later!");
                     }
+                    // else if (error_course.includes("has no specific time (TBA)!") ) {
+                    //     $('#loading1').hide();
+                    //     $('#error').text(error_course);
+                    // }
                     else {
                         console.error('Error 404: Course not found: ', error_course);
                         $('#loading1').hide();
