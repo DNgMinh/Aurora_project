@@ -81,8 +81,14 @@ def schedule_retrieve(term, course_list):
                                     course['meetingsFaculty'][0]['meetingTime']['friday'])
             enrolled = str(course['enrollment']) + "/" + str(course['maximumEnrollment'])
             wailist =  str(course['waitCount']) + "/" + str(course['waitCapacity'])
-            instructor = course['faculty'][0]['displayName']
-            location = course['meetingsFaculty'][0]['meetingTime']['buildingDescription']
+            if len(course['faculty']) > 0:
+                instructor = course['faculty'][0]['displayName']
+            else:
+                instructor = ""
+            if len(course['meetingsFaculty']) > 0:
+                location = course['meetingsFaculty'][0]['meetingTime']['buildingDescription']
+            else:
+                location = ""
             crn = "CRN=" + course['courseReferenceNumber']
             status = course['openSection']
             title = course['courseTitle']
@@ -97,6 +103,8 @@ def schedule_retrieve(term, course_list):
         if len(scheduleC) != 0:
             weirdCourses.append(courseName[0:-3])
             schedule_list.append(scheduleC)
+        print(schedule_list)
+        print("-----------------------------------------------------------")
     return (schedule_list, weirdCourses)
 
 def get_Course(cookies, term, course):
@@ -204,6 +212,6 @@ def daysFormatConvert(monday, tuesday, wednesday, thursday, friday):
     return days
 
 
-# result, w = schedule_retrieve("202490", [{"COMP": "2140"}, {"FREN": "1152"}])
+# result, w = schedule_retrieve("202510", [{"COMP": "1010"}])
 # print(result)
 
