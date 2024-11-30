@@ -63,53 +63,55 @@ def schedule_retrieve(term, course_list):
         scheduleA = {} 
         scheduleB = {}
         scheduleC = {}
-        response_json = get_Course(cookies, term, courseName)
+        subj, crse = list(courseName.items())[0]
+        response_json = get_Course(cookies, term, subj, crse)
 
         # Extract the list of courses
         # courses = response_json["data"]
-        courses = response_json.get("data", [])
-
-        # Print each course title and its course number
-        for course in courses:
-            class_name = course['subject'] + course['courseNumber'] + course['sequenceNumber']
-            time = timeFormatConvert(course['meetingsFaculty'][0]['meetingTime']['beginTime'], 
-                                     course['meetingsFaculty'][0]['meetingTime']['endTime'])
-            day = daysFormatConvert(course['meetingsFaculty'][0]['meetingTime']['monday'], 
-                                    course['meetingsFaculty'][0]['meetingTime']['tuesday'],
-                                    course['meetingsFaculty'][0]['meetingTime']['wednesday'], 
-                                    course['meetingsFaculty'][0]['meetingTime']['thursday'], 
-                                    course['meetingsFaculty'][0]['meetingTime']['friday'])
-            enrolled = str(course['enrollment']) + "/" + str(course['maximumEnrollment'])
-            wailist =  str(course['waitCount']) + "/" + str(course['waitCapacity'])
-            if len(course['faculty']) > 0:
-                instructor = course['faculty'][0]['displayName']
-            else:
-                instructor = ""
-            if len(course['meetingsFaculty']) > 0:
-                location = course['meetingsFaculty'][0]['meetingTime']['buildingDescription']
-            else:
-                location = ""
-            crn = "CRN=" + course['courseReferenceNumber']
-            status = course['openSection']
-            title = course['courseTitle']
-            if course['sequenceNumber'][0] == 'A':
-                scheduleA[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
-            elif course['sequenceNumber'][0] == 'B':
-                scheduleB[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
-        if len(scheduleA) != 0:
-                schedule_list.append(scheduleA)
-        if len(scheduleB) != 0:
-                schedule_list.append(scheduleB)  # separate A and B sections into different dicts to choose only one class from each  
-        if len(scheduleC) != 0:
-            weirdCourses.append(courseName[0:-3])
-            schedule_list.append(scheduleC)
-        print(schedule_list)
-        print("-----------------------------------------------------------")
+        courses = response_json["data"]
+        # print(courses)
+        if courses:
+            for course in courses:
+                class_name = course['subject'] + course['courseNumber'] + course['sequenceNumber']
+                time = timeFormatConvert(course['meetingsFaculty'][0]['meetingTime']['beginTime'], 
+                                        course['meetingsFaculty'][0]['meetingTime']['endTime'])
+                day = daysFormatConvert(course['meetingsFaculty'][0]['meetingTime']['monday'], 
+                                        course['meetingsFaculty'][0]['meetingTime']['tuesday'],
+                                        course['meetingsFaculty'][0]['meetingTime']['wednesday'], 
+                                        course['meetingsFaculty'][0]['meetingTime']['thursday'], 
+                                        course['meetingsFaculty'][0]['meetingTime']['friday'])
+                enrolled = str(course['enrollment']) + "/" + str(course['maximumEnrollment'])
+                wailist =  str(course['waitCount']) + "/" + str(course['waitCapacity'])
+                if len(course['faculty']) > 0:
+                    instructor = course['faculty'][0]['displayName']
+                else:
+                    instructor = ""
+                if len(course['meetingsFaculty']) > 0:
+                    location = course['meetingsFaculty'][0]['meetingTime']['buildingDescription']
+                else:
+                    location = ""
+                crn = "CRN=" + course['courseReferenceNumber']
+                status = course['openSection']
+                title = course['courseTitle']
+                if course['sequenceNumber'][0] == 'A':
+                    scheduleA[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
+                elif course['sequenceNumber'][0] == 'B':
+                    scheduleB[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
+            if len(scheduleA) != 0:
+                    schedule_list.append(scheduleA)
+            if len(scheduleB) != 0:
+                    schedule_list.append(scheduleB)  # separate A and B sections into different dicts to choose only one class from each  
+            if len(scheduleC) != 0:
+                weirdCourses.append(courseName[0:-3])
+                schedule_list.append(scheduleC)
+            # print(schedule_list)
+            # print("-----------------------------------------------------------")    
+        else:
+            return (subj+crse, weirdCourses)
     return (schedule_list, weirdCourses)
 
-def get_Course(cookies, term, course):
-    subj, crse = list(course.items())[0]
-    print(subj + crse)
+def get_Course(cookies, term, subj, crse):
+    # print(subj + crse)
 
     headers2 = {
         'Accept': 'application/json, text/javascript, */*; q=0.01',
