@@ -8,10 +8,10 @@ def schedule_retrieve(term, course_list):
     )
     jsessid = initial.cookies.get('JSESSIONID') 
     bigip = initial.cookies.get('BIGipServer~INB_SSB_Flex~Banner_Self_Service_Registration_BANPROD_pool') 
-    print(initial.cookies)
-    print(bigip)
-    print(jsessid)
-    print("------------------------------------------------------------------------------------------")
+    # print(initial.cookies)
+    # print(bigip)
+    # print(jsessid)
+    # print("------------------------------------------------------------------------------------------")
 
     cookies = {
         'JSESSIONID': jsessid,
@@ -74,6 +74,8 @@ def schedule_retrieve(term, course_list):
             for course in courses:
                 class_name = course['subject'] + course['courseNumber'] + course['sequenceNumber']
                 if len(course['meetingsFaculty']) > 0:
+                    if course['meetingsFaculty'][0]['meetingTime']['beginTime'] is None:
+                        continue
                     time = timeFormatConvert(course['meetingsFaculty'][0]['meetingTime']['beginTime'], 
                                             course['meetingsFaculty'][0]['meetingTime']['endTime'])
                     day = daysFormatConvert(course['meetingsFaculty'][0]['meetingTime']['monday'], 
@@ -224,6 +226,6 @@ def daysFormatConvert(monday, tuesday, wednesday, thursday, friday):
     return days
 
 
-# result, w = schedule_retrieve("202510", [{"COMP": "1010"}])
+# result, w = schedule_retrieve("202490", [{"COMP": "1020"}])
 # print(result)
 
