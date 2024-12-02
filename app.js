@@ -353,11 +353,11 @@ $(document).ready(function() {
             const popup = $(`
                 <div class="popup">
                     <p>${this_class[2]}</p>
+                    <p>Title: ${this_class[8]}</p>
                     <p>Enrolled: ${this_class[3]}</p>
                     <p>Waitlist: ${this_class[4]}</p>
                     <p>Instructor: ${this_class[5]}</p>
                     <p>Location: ${this_class[6]}</p>
-                    <p>Status: ${this_class[7]}</p>
                 </div>
             `);   
             $('body').append(popup);
