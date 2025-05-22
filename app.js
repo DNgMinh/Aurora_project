@@ -60,7 +60,7 @@ $(document).ready(function() {
 
         // Make an AJAX request to the backend
         $.ajax({
-            url: 'https://aurorascheduler.ca/schedule',
+            url: 'http://aurorascheduler.ca/schedule',
             type: 'POST',
             // contentType: 'application/json',
             // data: JSON.stringify({ courses }),      // key is courses
@@ -353,68 +353,11 @@ $(document).ready(function() {
             const popup = $(`
                 <div class="popup">
                     <p>${this_class[2]}</p>
+                    <p>Title: ${this_class[8]}</p>
                     <p>Enrolled: ${this_class[3]}</p>
                     <p>Waitlist: ${this_class[4]}</p>
                     <p>Instructor: ${this_class[5]}</p>
                     <p>Location: ${this_class[6]}</p>
-                    <p>Status: ${this_class[7]}</p>
-                </div>
-            `);   
-            $('body').append(popup);
-
-            // Position the popup near the target
-            const offset = $(this).offset();
-            popup.css({
-                top: offset.top + $(this).outerHeight(),
-                left: offset.left,
-            });
-        }
-
-        // Stop propagation to prevent immediate hiding
-        event.stopPropagation();
-    });
-
-    // Hide the popup when clicking anywhere else
-    $(document).on('click', function () {
-        $('.popup').remove(); // Remove the popup
-    });
-
-    // Prevent hiding when clicking inside the popup
-    $(document).on('click', '.popup', function (event) {
-        event.stopPropagation();
-    });
-
-
-
-    $('table').on('click', '.isACourse', function (event) {
-        console.log('Element clicked!', event);
-        let index = event.target.getAttribute('class-index');
-        // console.log(customized_class_list_ways[currentScheduleIndex2])
-        // let index = 0
-        // if (key[key.length-3] == 'A') {
-        //     index = 0
-        // } else if (key[key.length-3] == 'B') {
-        //     index = 1
-        // } else {
-        //     index = 2
-        // }
-        let this_class_dict = customized_class_list_ways[currentScheduleIndex2][index] // dict contain one class
-        let this_class = this_class_dict[Object.keys(this_class_dict)[0]]
-        console.log(this_class)
-        // Check if a popup already exists
-        if ($('.popup').length != 0) {
-            $('.popup').remove();
-        }
-        if ($('.popup').length === 0) {
-            // Create the popup dynamically
-            const popup = $(`
-                <div class="popup">
-                    <p>${this_class[2]}</p>
-                    <p>Enrolled: ${this_class[3]}</p>
-                    <p>Waitlist: ${this_class[4]}</p>
-                    <p>Instructor: ${this_class[5]}</p>
-                    <p>Location: ${this_class[6]}</p>
-                    <p>Status: ${this_class[7]}</p>
                 </div>
             `);   
             $('body').append(popup);
@@ -480,7 +423,7 @@ $(document).ready(function() {
             customized_class_list_ways = [];
             // Make an AJAX request to the backend
             $.ajax({
-                url: 'https://aurorascheduler.ca/customization',
+                url: 'http://aurorascheduler.ca/customization',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
@@ -580,7 +523,7 @@ $(document).ready(function() {
 
         // send request to backend to obtain data for making table
         $.ajax({
-            url: 'https://aurorascheduler.ca/loadCustomizedSchedule',
+            url: 'http://aurorascheduler.ca/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),

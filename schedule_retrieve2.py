@@ -8,10 +8,10 @@ def schedule_retrieve(term, course_list):
     )
     jsessid = initial.cookies.get('JSESSIONID') 
     bigip = initial.cookies.get('BIGipServer~INB_SSB_Flex~Banner_Self_Service_Registration_BANPROD_pool') 
-    print(initial.cookies)
-    print(bigip)
-    print(jsessid)
-    print("------------------------------------------------------------------------------------------")
+    # print(initial.cookies)
+    # print(bigip)
+    # print(jsessid)
+    # print("------------------------------------------------------------------------------------------")
 
     cookies = {
         'JSESSIONID': jsessid,
@@ -73,13 +73,16 @@ def schedule_retrieve(term, course_list):
         if courses:
             for course in courses:
                 class_name = course['subject'] + course['courseNumber'] + course['sequenceNumber']
-                time = timeFormatConvert(course['meetingsFaculty'][0]['meetingTime']['beginTime'], 
-                                        course['meetingsFaculty'][0]['meetingTime']['endTime'])
-                day = daysFormatConvert(course['meetingsFaculty'][0]['meetingTime']['monday'], 
-                                        course['meetingsFaculty'][0]['meetingTime']['tuesday'],
-                                        course['meetingsFaculty'][0]['meetingTime']['wednesday'], 
-                                        course['meetingsFaculty'][0]['meetingTime']['thursday'], 
-                                        course['meetingsFaculty'][0]['meetingTime']['friday'])
+                if len(course['meetingsFaculty']) > 0:
+                    if course['meetingsFaculty'][0]['meetingTime']['beginTime'] is None:
+                        continue
+                    time = timeFormatConvert(course['meetingsFaculty'][0]['meetingTime']['beginTime'], 
+                                            course['meetingsFaculty'][0]['meetingTime']['endTime'])
+                    day = daysFormatConvert(course['meetingsFaculty'][0]['meetingTime']['monday'], 
+                                            course['meetingsFaculty'][0]['meetingTime']['tuesday'],
+                                            course['meetingsFaculty'][0]['meetingTime']['wednesday'], 
+                                            course['meetingsFaculty'][0]['meetingTime']['thursday'], 
+                                            course['meetingsFaculty'][0]['meetingTime']['friday'])
                 enrolled = str(course['enrollment']) + "/" + str(course['maximumEnrollment'])
                 wailist =  str(course['waitCount']) + "/" + str(course['waitCapacity'])
                 if len(course['faculty']) > 0:
@@ -97,12 +100,21 @@ def schedule_retrieve(term, course_list):
                     scheduleA[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
                 elif course['sequenceNumber'][0] == 'B':
                     scheduleB[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
+                if len(course['meetingsFaculty']) == 2: # weird course with two meeting times
+                    time = timeFormatConvert(course['meetingsFaculty'][1]['meetingTime']['beginTime'], 
+                                            course['meetingsFaculty'][1]['meetingTime']['endTime'])
+                    day = daysFormatConvert(course['meetingsFaculty'][1]['meetingTime']['monday'], 
+                                            course['meetingsFaculty'][1]['meetingTime']['tuesday'],
+                                            course['meetingsFaculty'][1]['meetingTime']['wednesday'], 
+                                            course['meetingsFaculty'][1]['meetingTime']['thursday'], 
+                                            course['meetingsFaculty'][1]['meetingTime']['friday'])
+                    scheduleC[class_name] = [time, day, crn, enrolled, wailist, instructor, location, status, title]
             if len(scheduleA) != 0:
                     schedule_list.append(scheduleA)
             if len(scheduleB) != 0:
                     schedule_list.append(scheduleB)  # separate A and B sections into different dicts to choose only one class from each  
             if len(scheduleC) != 0:
-                weirdCourses.append(courseName[0:-3])
+                weirdCourses.append(subj+crse)
                 schedule_list.append(scheduleC)
             # print(schedule_list)
             # print("-----------------------------------------------------------")    
@@ -214,6 +226,6 @@ def daysFormatConvert(monday, tuesday, wednesday, thursday, friday):
     return days
 
 
-# result, w = schedule_retrieve("202510", [{"COMP": "1010"}])
+# result, w = schedule_retrieve("202490", [{"COMP": "1020"}])
 # print(result)
 
