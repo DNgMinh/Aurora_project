@@ -60,7 +60,7 @@ $(document).ready(function() {
 
         // Make an AJAX request to the backend
         $.ajax({
-            url: 'http://aurorascheduler.ca/schedule',
+            url: 'https://aurorascheduler.ca/schedule',
             type: 'POST',
             // contentType: 'application/json',
             // data: JSON.stringify({ courses }),      // key is courses
@@ -423,7 +423,7 @@ $(document).ready(function() {
             customized_class_list_ways = [];
             // Make an AJAX request to the backend
             $.ajax({
-                url: 'http://aurorascheduler.ca/customization',
+                url: 'https://aurorascheduler.ca/customization',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ customizations: customizations_list, class_list_ways: class_list_ways}),               // can only send text to backend
@@ -523,7 +523,7 @@ $(document).ready(function() {
 
         // send request to backend to obtain data for making table
         $.ajax({
-            url: 'http://aurorascheduler.ca/loadCustomizedSchedule',
+            url: 'https://aurorascheduler.ca/loadCustomizedSchedule',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({ current_class_list: current_class_list }),
